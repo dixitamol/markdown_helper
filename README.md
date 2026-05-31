@@ -1,3 +1,5 @@
+# DO NOT USE THIS BRANCH 
+
 # mdview — Markdown Reader & Editor PWA
 
 A zero-dependency, single-file Progressive Web App for reading and writing Markdown files on your phone.
