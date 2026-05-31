@@ -22,6 +22,7 @@
     --font-body: 'Georgia', 'Times New Roman', serif;
     --font-mono: 'Courier New', 'Courier', monospace;
     --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    --editor-font-size: 0.88rem;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -40,10 +41,7 @@
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html {
-    font-size: 17px;
-    -webkit-text-size-adjust: 100%;
-  }
+  html { font-size: 17px; -webkit-text-size-adjust: 100%; }
 
   body {
     font-family: var(--font-body);
@@ -54,427 +52,253 @@
     transition: background 0.2s, color 0.2s;
   }
 
-  /* ---- Landing screen ---- */
+  /* ---- Landing ---- */
   .landing {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100dvh;
-    padding: 2rem;
-    text-align: center;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; min-height: 100dvh; padding: 2rem; text-align: center;
   }
-
   .landing-logo {
-    font-family: var(--font-mono);
-    font-size: 2.5rem;
-    font-weight: bold;
-    letter-spacing: -0.05em;
-    color: var(--text);
-    margin-bottom: 0.25rem;
+    font-family: var(--font-mono); font-size: 2.5rem; font-weight: bold;
+    letter-spacing: -0.05em; color: var(--text); margin-bottom: 0.25rem;
   }
-
   .landing-logo span { color: var(--accent); }
-
   .landing-sub {
-    font-family: var(--font-ui);
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    margin-bottom: 2.5rem;
-    letter-spacing: 0.02em;
+    font-family: var(--font-ui); font-size: 0.85rem; color: var(--text-muted);
+    margin-bottom: 2.5rem; letter-spacing: 0.02em;
   }
-
-  .landing-actions {
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
+  .landing-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center; }
   .open-btn, .new-btn {
-    font-family: var(--font-ui);
-    font-size: 1rem;
-    font-weight: 600;
-    padding: 0.85rem 2.5rem;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    touch-action: manipulation;
+    font-family: var(--font-ui); font-size: 1rem; font-weight: 600;
+    padding: 0.85rem 2.5rem; border: none; border-radius: 8px;
+    cursor: pointer; touch-action: manipulation;
     transition: transform 0.1s, box-shadow 0.15s;
     box-shadow: 0 2px 8px var(--shadow);
   }
-
-  .open-btn {
-    background: var(--accent);
-    color: #fff;
-  }
-
-  .new-btn {
-    background: var(--bg-surface);
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
-
+  .open-btn { background: var(--accent); color: #fff; }
+  .new-btn { background: var(--bg-surface); color: var(--text); border: 1px solid var(--border); }
   .open-btn:active, .new-btn:active { transform: scale(0.97); }
-
   .drop-hint {
-    font-family: var(--font-ui);
-    font-size: 0.78rem;
-    color: var(--text-muted);
-    margin-top: 1.5rem;
+    font-family: var(--font-ui); font-size: 0.78rem;
+    color: var(--text-muted); margin-top: 1.5rem;
   }
 
-  /* ---- Reader/Editor screen ---- */
-  .reader {
-    display: none;
-    flex-direction: column;
-    min-height: 100dvh;
-  }
-
+  /* ---- Reader/Editor ---- */
+  .reader { display: none; flex-direction: column; min-height: 100dvh; }
   .reader.active { display: flex; }
 
   .toolbar {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    position: sticky; top: 0; z-index: 10;
+    display: flex; align-items: center; gap: 0.5rem;
     padding: 0.6rem 1rem;
-    background: var(--bg-surface);
-    border-bottom: 1px solid var(--border);
+    background: var(--bg-surface); border-bottom: 1px solid var(--border);
     font-family: var(--font-ui);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     flex-wrap: wrap;
   }
-
   .toolbar-back {
-    background: none;
-    border: none;
-    font-size: 1.4rem;
-    cursor: pointer;
-    color: var(--accent);
-    padding: 0.2rem 0.4rem;
-    line-height: 1;
+    background: none; border: none; font-size: 1.4rem; cursor: pointer;
+    color: var(--accent); padding: 0.2rem 0.4rem; line-height: 1;
     touch-action: manipulation;
   }
-
   .toolbar-filename {
-    flex: 1;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    min-width: 60px;
+    flex: 1; font-size: 0.82rem; font-weight: 600; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 60px;
   }
-
   .toolbar-btn {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    font-family: var(--font-ui);
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    padding: 0.3rem 0.6rem;
-    cursor: pointer;
-    touch-action: manipulation;
+    background: none; border: 1px solid var(--border); border-radius: 6px;
+    font-family: var(--font-ui); font-size: 0.75rem; color: var(--text-muted);
+    padding: 0.3rem 0.6rem; cursor: pointer; touch-action: manipulation;
   }
+  .toolbar-btn.active-mode { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .toolbar-btn:disabled { opacity: 0.4; cursor: default; }
 
-  .toolbar-btn.active-mode {
-    background: var(--accent);
-    color: #fff;
-    border-color: var(--accent);
-  }
-
-  .toolbar-btn:disabled {
-    opacity: 0.4;
-    cursor: default;
-  }
-
-  /* ---- Formatting toolbar ---- */
+  /* ---- Format bar ---- */
   .fmt-bar {
-    display: none;
-    gap: 0.25rem;
-    padding: 0.4rem 1rem;
-    background: var(--bg-surface);
-    border-bottom: 1px solid var(--border);
-    font-family: var(--font-ui);
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    flex-wrap: nowrap;
+    display: none; gap: 0.25rem; padding: 0.4rem 1rem;
+    background: var(--bg-surface); border-bottom: 1px solid var(--border);
+    font-family: var(--font-ui); overflow-x: auto;
+    -webkit-overflow-scrolling: touch; flex-wrap: nowrap;
   }
-
   .fmt-bar.visible { display: flex; }
-
   .fmt-btn {
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 5px;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--text);
-    padding: 0.35rem 0.55rem;
-    cursor: pointer;
-    touch-action: manipulation;
-    white-space: nowrap;
-    flex-shrink: 0;
-    line-height: 1;
+    background: none; border: 1px solid var(--border); border-radius: 5px;
+    font-family: var(--font-mono); font-size: 0.78rem; color: var(--text);
+    padding: 0.35rem 0.55rem; cursor: pointer; touch-action: manipulation;
+    white-space: nowrap; flex-shrink: 0; line-height: 1;
   }
-
   .fmt-btn:active { background: var(--accent); color: #fff; }
+  .fmt-sep {
+    width: 1px; background: var(--border); margin: 0.1rem 0.2rem; flex-shrink: 0;
+  }
 
   /* ---- Markdown content ---- */
   .md-content {
-    flex: 1;
-    max-width: 680px;
-    width: 100%;
-    margin: 0 auto;
+    flex: 1; max-width: 680px; width: 100%; margin: 0 auto;
     padding: 1.5rem 1.25rem 4rem;
-    overflow-wrap: break-word;
-    word-break: break-word;
+    overflow-wrap: break-word; word-break: break-word;
   }
-
   .md-content h1, .md-content h2, .md-content h3,
   .md-content h4, .md-content h5, .md-content h6 {
-    font-family: var(--font-ui);
-    line-height: 1.3;
-    margin: 1.6em 0 0.5em;
-    color: var(--text);
+    font-family: var(--font-ui); line-height: 1.3;
+    margin: 1.6em 0 0.5em; color: var(--text);
   }
-
   .md-content h1 { font-size: 1.8rem; margin-top: 0.5em; }
   .md-content h2 { font-size: 1.4rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
   .md-content h3 { font-size: 1.15rem; }
   .md-content h4 { font-size: 1rem; }
   .md-content h5 { font-size: 0.9rem; }
   .md-content h6 { font-size: 0.85rem; color: var(--text-muted); }
-
   .md-content p { margin: 0.8em 0; }
-
-  .md-content a {
-    color: var(--accent);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 2px;
-  }
-
+  .md-content a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
   .md-content strong { font-weight: 700; }
   .md-content em { font-style: italic; }
-
   .md-content code {
-    font-family: var(--font-mono);
-    font-size: 0.88em;
-    background: var(--code-bg);
-    padding: 0.15em 0.35em;
-    border-radius: 4px;
+    font-family: var(--font-mono); font-size: 0.88em;
+    background: var(--code-bg); padding: 0.15em 0.35em; border-radius: 4px;
   }
-
   .md-content pre {
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1rem;
-    overflow-x: auto;
-    margin: 1em 0;
-    -webkit-overflow-scrolling: touch;
+    background: var(--code-bg); border: 1px solid var(--border); border-radius: 6px;
+    padding: 1rem; overflow-x: auto; margin: 1em 0; -webkit-overflow-scrolling: touch;
   }
-
-  .md-content pre code {
-    background: none;
-    padding: 0;
-    font-size: 0.82rem;
-    line-height: 1.5;
-  }
-
+  .md-content pre code { background: none; padding: 0; font-size: 0.82rem; line-height: 1.5; }
   .md-content blockquote {
-    border-left: 3px solid var(--blockquote-border);
-    margin: 1em 0;
-    padding: 0.4em 0 0.4em 1em;
-    color: var(--text-muted);
-    font-style: italic;
+    border-left: 3px solid var(--blockquote-border); margin: 1em 0;
+    padding: 0.4em 0 0.4em 1em; color: var(--text-muted); font-style: italic;
   }
-
-  .md-content ul, .md-content ol {
-    margin: 0.6em 0;
-    padding-left: 1.8em;
-  }
-
+  .md-content ul, .md-content ol { margin: 0.6em 0; padding-left: 1.8em; }
   .md-content li { margin: 0.25em 0; }
   .md-content li > ul, .md-content li > ol { margin: 0.15em 0; }
-
-  .md-content hr {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 2em 0;
-  }
-
-  .md-content img {
-    max-width: 100%;
-    height: auto;
-    border-radius: 4px;
-    margin: 0.5em 0;
-  }
-
-  .md-content .task-item {
-    list-style: none;
-    margin-left: -1.3em;
-  }
-
-  .md-content .task-item input {
-    margin-right: 0.4em;
-    pointer-events: none;
-  }
-
+  .md-content hr { border: none; border-top: 1px solid var(--border); margin: 2em 0; }
+  .md-content img { max-width: 100%; height: auto; border-radius: 4px; margin: 0.5em 0; }
+  .md-content .task-item { list-style: none; margin-left: -1.3em; }
+  .md-content .task-item input { margin-right: 0.4em; pointer-events: none; }
   .md-content table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1em 0;
-    font-family: var(--font-ui);
-    font-size: 0.88rem;
-    display: block;
-    overflow-x: auto;
+    width: 100%; border-collapse: collapse; margin: 1em 0;
+    font-family: var(--font-ui); font-size: 0.88rem;
+    display: block; overflow-x: auto;
   }
-
   .md-content th, .md-content td {
-    border: 1px solid var(--border);
-    padding: 0.5em 0.75em;
-    text-align: left;
-    white-space: nowrap;
+    border: 1px solid var(--border); padding: 0.5em 0.75em;
+    text-align: left; white-space: nowrap;
   }
-
-  .md-content th {
-    background: var(--bg-surface);
-    font-weight: 600;
+  .md-content th { background: var(--bg-surface); font-weight: 600; }
+  .md-content sup.fn-ref {
+    font-size: 0.75em; cursor: pointer; color: var(--accent);
+    text-decoration: none; font-family: var(--font-ui);
   }
+  .md-content .footnotes {
+    margin-top: 2em; padding-top: 1em; border-top: 1px solid var(--border);
+    font-size: 0.88rem;
+  }
+  .md-content .footnotes li { margin: 0.4em 0; }
+  .md-content .fn-back { text-decoration: none; color: var(--accent); margin-left: 0.3em; }
+  .md-content mark { background: #fff3a8; padding: 0.1em 0.2em; border-radius: 2px; }
+  .md-content kbd {
+    font-family: var(--font-ui); font-size: 0.82em;
+    background: var(--bg-surface); border: 1px solid var(--border);
+    border-radius: 3px; padding: 0.1em 0.4em; box-shadow: 0 1px 0 var(--border);
+  }
+  .md-content details { margin: 0.8em 0; }
+  .md-content summary { cursor: pointer; font-weight: 600; }
 
   /* ---- Editor ---- */
-  .editor-area {
-    display: none;
-    flex: 1;
-    max-width: 680px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0;
-    flex-direction: column;
-  }
-
-  .editor-area.visible {
-    display: flex;
-  }
-
+  .editor-area { display: none; flex: 1; max-width: 680px; width: 100%; margin: 0 auto; flex-direction: column; }
+  .editor-area.visible { display: flex; }
   .editor-textarea {
-    flex: 1;
-    width: 100%;
-    min-height: calc(100dvh - 140px);
+    flex: 1; width: 100%; min-height: calc(100dvh - 140px);
     padding: 1.5rem 1.25rem 4rem;
-    border: none;
-    outline: none;
-    resize: none;
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 0.88rem;
-    line-height: 1.7;
-    tab-size: 2;
-    -moz-tab-size: 2;
+    border: none; outline: none; resize: none;
+    background: var(--bg); color: var(--text);
+    font-family: var(--font-mono); font-size: var(--editor-font-size);
+    line-height: 1.7; tab-size: 2; -moz-tab-size: 2;
+  }
+
+  /* ---- Raw source ---- */
+  .raw-source {
+    display: none; flex: 1; max-width: 680px; width: 100%; margin: 0 auto;
+    padding: 1.5rem 1.25rem 4rem;
+    font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6;
+    white-space: pre-wrap; word-break: break-word; color: var(--text-muted);
   }
 
   /* ---- Status bar ---- */
   .status-bar {
-    display: none;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    display: none; position: fixed; bottom: 0; left: 0; right: 0;
     padding: 0.35rem 1rem;
-    background: var(--bg-surface);
-    border-top: 1px solid var(--border);
-    font-family: var(--font-ui);
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    display: flex;
-    justify-content: space-between;
-    z-index: 10;
+    background: var(--bg-surface); border-top: 1px solid var(--border);
+    font-family: var(--font-ui); font-size: 0.7rem; color: var(--text-muted);
+    justify-content: space-between; z-index: 10;
   }
-
   .status-bar.visible { display: flex; }
 
-  /* ---- Raw source view ---- */
-  .raw-source {
-    display: none;
-    flex: 1;
-    max-width: 680px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 1.5rem 1.25rem 4rem;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    word-break: break-word;
-    color: var(--text-muted);
+  /* ---- Find & Replace ---- */
+  .find-bar {
+    display: none; gap: 0.4rem; padding: 0.5rem 1rem; align-items: center;
+    background: var(--bg-surface); border-bottom: 1px solid var(--border);
+    font-family: var(--font-ui); flex-wrap: wrap;
+  }
+  .find-bar.visible { display: flex; }
+  .find-bar input {
+    font-family: var(--font-ui); font-size: 0.82rem;
+    padding: 0.3rem 0.5rem; border: 1px solid var(--border); border-radius: 5px;
+    background: var(--bg); color: var(--text); outline: none;
+    min-width: 0; flex: 1;
+  }
+  .find-bar input:focus { border-color: var(--accent); }
+  .find-bar button {
+    font-family: var(--font-ui); font-size: 0.72rem;
+    padding: 0.3rem 0.5rem; border: 1px solid var(--border); border-radius: 5px;
+    background: none; color: var(--text-muted); cursor: pointer;
+    touch-action: manipulation; white-space: nowrap;
+  }
+  .find-bar button:active { background: var(--accent); color: #fff; }
+  .find-bar .find-count {
+    font-size: 0.7rem; color: var(--text-muted); white-space: nowrap; min-width: 3em;
   }
 
-  /* ---- Scroll to top ---- */
+  /* ---- Misc ---- */
   .scroll-top {
-    position: fixed;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--bg-surface);
-    color: var(--text-muted);
-    font-size: 1.2rem;
-    cursor: pointer;
-    touch-action: manipulation;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s;
-    box-shadow: 0 2px 8px var(--shadow);
-    z-index: 20;
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    width: 42px; height: 42px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--bg-surface);
+    color: var(--text-muted); font-size: 1.2rem;
+    cursor: pointer; touch-action: manipulation;
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+    box-shadow: 0 2px 8px var(--shadow); z-index: 20;
   }
+  .scroll-top.visible { opacity: 1; pointer-events: auto; }
 
-  .scroll-top.visible {
-    opacity: 1;
-    pointer-events: auto;
-  }
-
-  /* ---- Drag & drop overlay ---- */
   .drop-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    background: rgba(0,0,0,0.15);
-    border: 3px dashed var(--accent);
-    justify-content: center;
-    align-items: center;
-    font-family: var(--font-ui);
-    font-size: 1.2rem;
-    color: var(--accent);
-    font-weight: 600;
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,0.15); border: 3px dashed var(--accent);
+    justify-content: center; align-items: center;
+    font-family: var(--font-ui); font-size: 1.2rem;
+    color: var(--accent); font-weight: 600;
   }
-
   .drop-overlay.active { display: flex; }
 
-  /* ---- Unsaved indicator ---- */
   .unsaved-dot {
-    display: none;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-    flex-shrink: 0;
+    display: none; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
   }
-
   .unsaved-dot.visible { display: inline-block; }
 
-  /* Hide file input */
   #file-input { display: none; }
+
+  /* ---- Print ---- */
+  @media print {
+    .toolbar, .fmt-bar, .find-bar, .status-bar,
+    .scroll-top, .drop-overlay, .landing { display: none !important; }
+    .reader { display: block !important; min-height: auto; }
+    .md-content {
+      max-width: 100%; padding: 0; display: block !important;
+      font-size: 12pt; line-height: 1.5;
+    }
+    .md-content pre { white-space: pre-wrap; border: 1px solid #ccc; }
+    .md-content a { color: inherit; text-decoration: underline; }
+    .md-content a::after { content: " (" attr(href) ")"; font-size: 0.8em; color: #666; }
+    body { background: white; color: black; }
+  }
 </style>
 </head>
 <body>
@@ -499,15 +323,22 @@
     <button class="toolbar-btn" id="toggle-edit">Edit</button>
     <button class="toolbar-btn" id="toggle-raw">Source</button>
     <button class="toolbar-btn" id="save-btn" style="display:none">Save</button>
+    <button class="toolbar-btn" id="export-btn" style="display:none">HTML</button>
+    <button class="toolbar-btn" id="fullscreen-btn">⛶</button>
     <button class="toolbar-btn" id="open-another">Open</button>
   </div>
   <div class="fmt-bar" id="fmt-bar">
+    <button class="fmt-btn" data-fmt="undo" title="Undo">↩</button>
+    <button class="fmt-btn" data-fmt="redo" title="Redo">↪</button>
+    <div class="fmt-sep"></div>
     <button class="fmt-btn" data-fmt="bold" title="Bold (Ctrl+B)"><b>B</b></button>
     <button class="fmt-btn" data-fmt="italic" title="Italic (Ctrl+I)"><i>I</i></button>
     <button class="fmt-btn" data-fmt="code" title="Code">&#96;</button>
+    <div class="fmt-sep"></div>
     <button class="fmt-btn" data-fmt="h1" title="Heading 1">H1</button>
     <button class="fmt-btn" data-fmt="h2" title="Heading 2">H2</button>
     <button class="fmt-btn" data-fmt="h3" title="Heading 3">H3</button>
+    <div class="fmt-sep"></div>
     <button class="fmt-btn" data-fmt="link" title="Link">[&#8202;]</button>
     <button class="fmt-btn" data-fmt="ul" title="Bullet list">•</button>
     <button class="fmt-btn" data-fmt="ol" title="Numbered list">1.</button>
@@ -516,6 +347,20 @@
     <button class="fmt-btn" data-fmt="codeblock" title="Code block">```</button>
     <button class="fmt-btn" data-fmt="hr" title="Horizontal rule">—</button>
     <button class="fmt-btn" data-fmt="table" title="Table">⊞</button>
+    <div class="fmt-sep"></div>
+    <button class="fmt-btn" data-fmt="find" title="Find (Ctrl+F)">🔍</button>
+    <button class="fmt-btn" data-fmt="font-down" title="Smaller font">A-</button>
+    <button class="fmt-btn" data-fmt="font-up" title="Larger font">A+</button>
+  </div>
+  <div class="find-bar" id="find-bar">
+    <input type="text" id="find-input" placeholder="Find…" autocomplete="off">
+    <span class="find-count" id="find-count"></span>
+    <button id="find-prev">▲</button>
+    <button id="find-next">▼</button>
+    <input type="text" id="replace-input" placeholder="Replace…" autocomplete="off">
+    <button id="replace-one">Replace</button>
+    <button id="replace-all">All</button>
+    <button id="find-close">✕</button>
   </div>
   <div class="md-content" id="md-content"></div>
   <pre class="raw-source" id="raw-source"></pre>
@@ -535,35 +380,43 @@
 <script>
 (function() {
   // --- Elements ---
-  const landing      = document.getElementById('landing');
-  const reader       = document.getElementById('reader');
-  const openBtn      = document.getElementById('open-btn');
-  const newBtn       = document.getElementById('new-btn');
-  const backBtn      = document.getElementById('back-btn');
-  const toggleEdit   = document.getElementById('toggle-edit');
-  const toggleRaw    = document.getElementById('toggle-raw');
-  const saveBtn      = document.getElementById('save-btn');
-  const openMore     = document.getElementById('open-another');
-  const fileInput    = document.getElementById('file-input');
-  const mdContent    = document.getElementById('md-content');
-  const rawSource    = document.getElementById('raw-source');
-  const editorArea   = document.getElementById('editor-area');
-  const editorTA     = document.getElementById('editor-textarea');
-  const fmtBar       = document.getElementById('fmt-bar');
-  const filenameEl   = document.getElementById('filename');
-  const scrollTopEl  = document.getElementById('scroll-top');
-  const dropOverlay  = document.getElementById('drop-overlay');
-  const statusBar    = document.getElementById('status-bar');
-  const wordCountEl  = document.getElementById('word-count');
-  const charCountEl  = document.getElementById('char-count');
-  const unsavedDot   = document.getElementById('unsaved-dot');
+  const $ = id => document.getElementById(id);
+  const landing      = $('landing');
+  const reader       = $('reader');
+  const openBtn      = $('open-btn');
+  const newBtn       = $('new-btn');
+  const backBtn      = $('back-btn');
+  const toggleEdit   = $('toggle-edit');
+  const toggleRaw    = $('toggle-raw');
+  const saveBtn      = $('save-btn');
+  const exportBtn    = $('export-btn');
+  const fullscreenBtn= $('fullscreen-btn');
+  const openMore     = $('open-another');
+  const fileInput    = $('file-input');
+  const mdContent    = $('md-content');
+  const rawSource    = $('raw-source');
+  const editorArea   = $('editor-area');
+  const editorTA     = $('editor-textarea');
+  const fmtBar       = $('fmt-bar');
+  const filenameEl   = $('filename');
+  const scrollTopEl  = $('scroll-top');
+  const dropOverlay  = $('drop-overlay');
+  const statusBar    = $('status-bar');
+  const wordCountEl  = $('word-count');
+  const charCountEl  = $('char-count');
+  const unsavedDot   = $('unsaved-dot');
+  const findBar      = $('find-bar');
+  const findInput    = $('find-input');
+  const findCount    = $('find-count');
+  const replaceInput = $('replace-input');
 
   // --- State ---
-  let mode = 'view'; // 'view' | 'edit' | 'source'
+  let mode = 'view';
   let currentRaw = '';
   let currentName = 'untitled.md';
-  let fileHandle = null; // for save-in-place
+  let fileHandle = null;
   let hasUnsaved = false;
+  let editorFontSize = 0.88;
 
   // --- File handler ---
   function handleFile(file) {
@@ -589,11 +442,13 @@
     rawSource.style.display = 'none';
     editorArea.classList.remove('visible');
     fmtBar.classList.remove('visible');
+    findBar.classList.remove('visible');
     statusBar.classList.remove('visible');
     toggleEdit.textContent = 'Edit';
     toggleEdit.classList.remove('active-mode');
     toggleRaw.textContent = 'Source';
     saveBtn.style.display = 'none';
+    exportBtn.style.display = '';
     unsavedDot.classList.toggle('visible', hasUnsaved);
     landing.style.display = 'none';
     reader.classList.add('active');
@@ -612,6 +467,7 @@
     toggleEdit.classList.add('active-mode');
     toggleRaw.textContent = 'Source';
     saveBtn.style.display = '';
+    exportBtn.style.display = 'none';
     updateCounts();
     editorTA.focus();
   }
@@ -622,12 +478,14 @@
     mdContent.style.display = 'none';
     editorArea.classList.remove('visible');
     fmtBar.classList.remove('visible');
+    findBar.classList.remove('visible');
     statusBar.classList.remove('visible');
     rawSource.style.display = 'block';
     toggleRaw.textContent = 'Rendered';
     toggleEdit.textContent = 'Edit';
     toggleEdit.classList.remove('active-mode');
     saveBtn.style.display = 'none';
+    exportBtn.style.display = 'none';
   }
 
   function showLanding() {
@@ -649,16 +507,15 @@
     currentName = 'untitled.md';
     fileHandle = null;
     hasUnsaved = false;
-    enterEdit();
     landing.style.display = 'none';
     reader.classList.add('active');
     filenameEl.textContent = currentName;
     document.title = currentName + ' — mdview';
+    enterEdit();
   });
 
   toggleEdit.addEventListener('click', () => {
     if (mode === 'edit') {
-      // going back to preview — capture edits
       currentRaw = editorTA.value;
       enterView();
     } else {
@@ -667,15 +524,9 @@
   });
 
   toggleRaw.addEventListener('click', () => {
-    if (mode === 'source') {
-      enterView();
-    } else if (mode === 'view') {
-      enterSource();
-    } else {
-      // from edit, go to source (save edits first)
-      currentRaw = editorTA.value;
-      enterSource();
-    }
+    if (mode === 'source') { enterView(); }
+    else if (mode === 'view') { enterSource(); }
+    else { currentRaw = editorTA.value; enterSource(); }
   });
 
   fileInput.addEventListener('change', (e) => {
@@ -683,14 +534,13 @@
     fileInput.value = '';
   });
 
-  // --- Editor: track changes ---
+  // --- Editor input ---
   editorTA.addEventListener('input', () => {
     hasUnsaved = true;
     unsavedDot.classList.add('visible');
     updateCounts();
   });
 
-  // --- Word/char count ---
   function updateCounts() {
     const text = editorTA.value;
     const chars = text.length;
@@ -699,11 +549,70 @@
     charCountEl.textContent = chars + ' char' + (chars !== 1 ? 's' : '');
   }
 
-  // --- Tab key in editor ---
+  // --- Tab key & auto-continue lists ---
   editorTA.addEventListener('keydown', (e) => {
     if (e.key === 'Tab') {
       e.preventDefault();
       insertAtCursor('  ');
+      return;
+    }
+
+    if (e.key === 'Enter') {
+      const ta = editorTA;
+      const pos = ta.selectionStart;
+      const before = ta.value.substring(0, pos);
+      const lastLine = before.split('\n').pop();
+
+      // Detect list prefix
+      let match;
+      if ((match = lastLine.match(/^(\s*)([-*+])\s(\[[ xX]\]\s)?(.*)$/))) {
+        // Unordered or task list
+        if (match[4].trim() === '' && (!match[3] || match[3].trim() === '')) {
+          // Empty item — remove the list prefix
+          e.preventDefault();
+          const lineStart = pos - lastLine.length;
+          ta.value = ta.value.substring(0, lineStart) + '\n' + ta.value.substring(pos);
+          ta.selectionStart = ta.selectionEnd = lineStart + 1;
+          ta.dispatchEvent(new Event('input'));
+        } else {
+          e.preventDefault();
+          const prefix = match[1] + match[2] + ' ' + (match[3] ? '[ ] ' : '');
+          ta.value = before + '\n' + prefix + ta.value.substring(pos);
+          ta.selectionStart = ta.selectionEnd = pos + 1 + prefix.length;
+          ta.dispatchEvent(new Event('input'));
+        }
+      } else if ((match = lastLine.match(/^(\s*)(\d+)\.\s(.*)$/))) {
+        // Ordered list
+        if (match[3].trim() === '') {
+          e.preventDefault();
+          const lineStart = pos - lastLine.length;
+          ta.value = ta.value.substring(0, lineStart) + '\n' + ta.value.substring(pos);
+          ta.selectionStart = ta.selectionEnd = lineStart + 1;
+          ta.dispatchEvent(new Event('input'));
+        } else {
+          e.preventDefault();
+          const nextNum = parseInt(match[2]) + 1;
+          const prefix = match[1] + nextNum + '. ';
+          ta.value = before + '\n' + prefix + ta.value.substring(pos);
+          ta.selectionStart = ta.selectionEnd = pos + 1 + prefix.length;
+          ta.dispatchEvent(new Event('input'));
+        }
+      } else if ((match = lastLine.match(/^(\s*)>\s?(.*)$/))) {
+        // Blockquote
+        if (match[2].trim() === '') {
+          e.preventDefault();
+          const lineStart = pos - lastLine.length;
+          ta.value = ta.value.substring(0, lineStart) + '\n' + ta.value.substring(pos);
+          ta.selectionStart = ta.selectionEnd = lineStart + 1;
+          ta.dispatchEvent(new Event('input'));
+        } else {
+          e.preventDefault();
+          const prefix = match[1] + '> ';
+          ta.value = before + '\n' + prefix + ta.value.substring(pos);
+          ta.selectionStart = ta.selectionEnd = pos + 1 + prefix.length;
+          ta.dispatchEvent(new Event('input'));
+        }
+      }
     }
   });
 
@@ -712,7 +621,6 @@
 
   async function saveFile() {
     currentRaw = editorTA.value;
-    // Try native file picker (Chrome)
     if ('showSaveFilePicker' in window) {
       try {
         if (!fileHandle) {
@@ -732,10 +640,8 @@
         return;
       } catch (err) {
         if (err.name === 'AbortError') return;
-        // fall through to download
       }
     }
-    // Fallback: download
     const blob = new Blob([currentRaw], { type: 'text/markdown' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -746,20 +652,158 @@
     unsavedDot.classList.remove('visible');
   }
 
+  // --- Export HTML ---
+  exportBtn.addEventListener('click', () => {
+    const htmlDoc = '<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<title>' +
+      escHtml(currentName) + '</title>\n<style>\nbody{font-family:Georgia,serif;max-width:680px;margin:2rem auto;padding:0 1.25rem;line-height:1.7;color:#1a1a1a;}\npre{background:#f5f5f0;padding:1rem;border-radius:6px;overflow-x:auto;}\ncode{font-family:monospace;font-size:0.88em;background:#f5f5f0;padding:0.15em 0.35em;border-radius:4px;}\npre code{background:none;padding:0;}\nblockquote{border-left:3px solid #ccc;padding-left:1em;color:#666;font-style:italic;}\ntable{border-collapse:collapse;width:100%;}\nth,td{border:1px solid #ddd;padding:0.5em 0.75em;text-align:left;}\nth{background:#f5f5f0;}\nimg{max-width:100%;}\n</style>\n</head>\n<body>\n' +
+      parseMd(currentRaw) + '\n</body>\n</html>';
+    const blob = new Blob([htmlDoc], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = currentName.replace(/\.(md|markdown|txt)$/i, '') + '.html';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  });
+
+  // --- Fullscreen ---
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else {
+      document.exitFullscreen();
+    }
+  });
+
+  // --- Font size ---
+  function changeFontSize(delta) {
+    editorFontSize = Math.max(0.6, Math.min(1.5, editorFontSize + delta));
+    editorTA.style.fontSize = editorFontSize + 'rem';
+  }
+
+  // --- Find & Replace ---
+  let findMatches = [];
+  let findIndex = -1;
+
+  function openFind() {
+    findBar.classList.add('visible');
+    findInput.focus();
+    findInput.select();
+  }
+
+  function closeFind() {
+    findBar.classList.remove('visible');
+    findMatches = [];
+    findIndex = -1;
+    findCount.textContent = '';
+  }
+
+  function doFind() {
+    const q = findInput.value;
+    findMatches = [];
+    findIndex = -1;
+    if (!q) { findCount.textContent = ''; return; }
+    const text = editorTA.value;
+    const lower = text.toLowerCase();
+    const ql = q.toLowerCase();
+    let pos = 0;
+    while ((pos = lower.indexOf(ql, pos)) !== -1) {
+      findMatches.push(pos);
+      pos += ql.length;
+    }
+    findCount.textContent = findMatches.length + ' found';
+    if (findMatches.length) { findIndex = 0; highlightMatch(); }
+  }
+
+  function highlightMatch() {
+    if (findIndex < 0 || !findMatches.length) return;
+    const pos = findMatches[findIndex];
+    const len = findInput.value.length;
+    editorTA.focus();
+    editorTA.selectionStart = pos;
+    editorTA.selectionEnd = pos + len;
+    // Scroll into view — crude but effective
+    const linesBefore = editorTA.value.substring(0, pos).split('\n').length;
+    const lineHeight = parseFloat(getComputedStyle(editorTA).lineHeight) || 20;
+    editorTA.scrollTop = (linesBefore - 3) * lineHeight;
+    findCount.textContent = (findIndex + 1) + '/' + findMatches.length;
+  }
+
+  $('find-next').addEventListener('click', () => {
+    if (!findMatches.length) return;
+    findIndex = (findIndex + 1) % findMatches.length;
+    highlightMatch();
+  });
+
+  $('find-prev').addEventListener('click', () => {
+    if (!findMatches.length) return;
+    findIndex = (findIndex - 1 + findMatches.length) % findMatches.length;
+    highlightMatch();
+  });
+
+  findInput.addEventListener('input', doFind);
+  findInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (e.shiftKey) $('find-prev').click();
+      else $('find-next').click();
+    }
+    if (e.key === 'Escape') closeFind();
+  });
+
+  replaceInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeFind();
+  });
+
+  $('replace-one').addEventListener('click', () => {
+    if (findIndex < 0 || !findMatches.length) return;
+    const pos = findMatches[findIndex];
+    const len = findInput.value.length;
+    const rep = replaceInput.value;
+    editorTA.value = editorTA.value.substring(0, pos) + rep + editorTA.value.substring(pos + len);
+    editorTA.dispatchEvent(new Event('input'));
+    doFind();
+  });
+
+  $('replace-all').addEventListener('click', () => {
+    const q = findInput.value;
+    if (!q) return;
+    const rep = replaceInput.value;
+    // Case-insensitive replace all
+    const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    editorTA.value = editorTA.value.replace(new RegExp(escaped, 'gi'), rep);
+    editorTA.dispatchEvent(new Event('input'));
+    doFind();
+  });
+
+  $('find-close').addEventListener('click', closeFind);
+
   // --- Keyboard shortcuts ---
   document.addEventListener('keydown', (e) => {
-    if (mode !== 'edit') return;
     const mod = e.ctrlKey || e.metaKey;
-    if (mod && e.key === 'b') { e.preventDefault(); applyFormat('bold'); }
-    else if (mod && e.key === 'i') { e.preventDefault(); applyFormat('italic'); }
-    else if (mod && e.key === 's') { e.preventDefault(); saveFile(); }
+    if (mode === 'edit') {
+      if (mod && e.key === 'b') { e.preventDefault(); applyFormat('bold'); }
+      else if (mod && e.key === 'i') { e.preventDefault(); applyFormat('italic'); }
+      else if (mod && e.key === 's') { e.preventDefault(); saveFile(); }
+      else if (mod && e.key === 'f') { e.preventDefault(); openFind(); }
+      else if (mod && e.key === 'h') { e.preventDefault(); openFind(); replaceInput.focus(); }
+    }
   });
+
+  // --- Undo/redo via execCommand ---
+  function doUndo() { editorTA.focus(); document.execCommand('undo'); }
+  function doRedo() { editorTA.focus(); document.execCommand('redo'); }
 
   // --- Formatting toolbar ---
   fmtBar.addEventListener('click', (e) => {
     const btn = e.target.closest('.fmt-btn');
     if (!btn) return;
-    applyFormat(btn.dataset.fmt);
+    const fmt = btn.dataset.fmt;
+    if (fmt === 'undo') { doUndo(); return; }
+    if (fmt === 'redo') { doRedo(); return; }
+    if (fmt === 'find') { openFind(); return; }
+    if (fmt === 'font-up') { changeFontSize(0.04); return; }
+    if (fmt === 'font-down') { changeFontSize(-0.04); return; }
+    applyFormat(fmt);
     editorTA.focus();
   });
 
@@ -770,55 +814,38 @@
     const sel = ta.value.substring(start, end);
     const before = ta.value.substring(0, start);
     const after = ta.value.substring(end);
-
     let insert = '';
     let cursorOffset = 0;
 
     switch (fmt) {
       case 'bold':
         insert = '**' + (sel || 'bold text') + '**';
-        cursorOffset = sel ? insert.length : 2;
-        break;
+        cursorOffset = sel ? insert.length : 2; break;
       case 'italic':
         insert = '*' + (sel || 'italic text') + '*';
-        cursorOffset = sel ? insert.length : 1;
-        break;
+        cursorOffset = sel ? insert.length : 1; break;
       case 'code':
         insert = '`' + (sel || 'code') + '`';
-        cursorOffset = sel ? insert.length : 1;
-        break;
-      case 'h1':
-        insert = linePrefix(before, '# ', sel); break;
-      case 'h2':
-        insert = linePrefix(before, '## ', sel); break;
-      case 'h3':
-        insert = linePrefix(before, '### ', sel); break;
+        cursorOffset = sel ? insert.length : 1; break;
+      case 'h1': insert = linePrefix(before, '# ', sel); break;
+      case 'h2': insert = linePrefix(before, '## ', sel); break;
+      case 'h3': insert = linePrefix(before, '### ', sel); break;
       case 'link':
         insert = '[' + (sel || 'text') + '](url)';
-        cursorOffset = sel ? insert.length - 4 : 1;
-        break;
-      case 'ul':
-        insert = linePrefix(before, '- ', sel); break;
-      case 'ol':
-        insert = linePrefix(before, '1. ', sel); break;
-      case 'task':
-        insert = linePrefix(before, '- [ ] ', sel); break;
-      case 'quote':
-        insert = linePrefix(before, '> ', sel); break;
+        cursorOffset = sel ? insert.length - 4 : 1; break;
+      case 'ul': insert = linePrefix(before, '- ', sel); break;
+      case 'ol': insert = linePrefix(before, '1. ', sel); break;
+      case 'task': insert = linePrefix(before, '- [ ] ', sel); break;
+      case 'quote': insert = linePrefix(before, '> ', sel); break;
       case 'codeblock':
         insert = '\n```\n' + (sel || '') + '\n```\n';
-        cursorOffset = sel ? insert.length : 5;
-        break;
+        cursorOffset = sel ? insert.length : 5; break;
       case 'hr':
-        insert = '\n---\n';
-        cursorOffset = insert.length;
-        break;
+        insert = '\n---\n'; cursorOffset = insert.length; break;
       case 'table':
         insert = '\n| Header | Header |\n|--------|--------|\n| Cell   | Cell   |\n';
-        cursorOffset = insert.length;
-        break;
-      default:
-        return;
+        cursorOffset = insert.length; break;
+      default: return;
     }
 
     ta.value = before + insert + after;
@@ -828,7 +855,6 @@
   }
 
   function linePrefix(before, prefix, sel) {
-    // If we're mid-line, add a newline first
     const needsNL = before.length > 0 && before[before.length - 1] !== '\n';
     return (needsNL ? '\n' : '') + prefix + (sel || '');
   }
@@ -845,49 +871,50 @@
   window.addEventListener('scroll', () => {
     scrollTopEl.classList.toggle('visible', window.scrollY > 400);
   }, { passive: true });
-
-  scrollTopEl.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  scrollTopEl.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
   // --- Drag & drop ---
   let dragCounter = 0;
-
-  document.addEventListener('dragenter', (e) => {
-    e.preventDefault();
-    dragCounter++;
-    dropOverlay.classList.add('active');
-  });
-
-  document.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    dragCounter--;
-    if (dragCounter <= 0) {
-      dragCounter = 0;
-      dropOverlay.classList.remove('active');
-    }
-  });
-
+  document.addEventListener('dragenter', (e) => { e.preventDefault(); dragCounter++; dropOverlay.classList.add('active'); });
+  document.addEventListener('dragleave', (e) => { e.preventDefault(); dragCounter--; if (dragCounter <= 0) { dragCounter = 0; dropOverlay.classList.remove('active'); } });
   document.addEventListener('dragover', (e) => e.preventDefault());
+  document.addEventListener('drop', (e) => { e.preventDefault(); dragCounter = 0; dropOverlay.classList.remove('active'); const file = e.dataTransfer.files[0]; if (file) handleFile(file); });
 
-  document.addEventListener('drop', (e) => {
-    e.preventDefault();
-    dragCounter = 0;
-    dropOverlay.classList.remove('active');
-    const file = e.dataTransfer.files[0];
-    if (file) handleFile(file);
-  });
+  // --- Warn before leaving ---
+  window.addEventListener('beforeunload', (e) => { if (hasUnsaved) { e.preventDefault(); e.returnValue = ''; } });
 
-  // --- Warn before leaving with unsaved changes ---
-  window.addEventListener('beforeunload', (e) => {
-    if (hasUnsaved) {
-      e.preventDefault();
-      e.returnValue = '';
-    }
-  });
+  // ========================================
+  // Markdown Parser
+  // ========================================
 
-  // --- Markdown Parser ---
+  // Safe HTML tags whitelist
+  const SAFE_TAGS = new Set(['br','hr','details','summary','mark','kbd','abbr','sup','sub','small','u','ins','del']);
+
   function parseMd(src) {
+    // Collect footnote definitions
+    const footnotes = {};
+    const srcClean = src.replace(/^\[\^(\w+)\]:\s*(.+)$/gm, (_, id, text) => {
+      footnotes[id] = text;
+      return '';
+    });
+
+    let html = parseBlocks(srcClean);
+
+    // Render footnote section
+    const fnIds = Object.keys(footnotes);
+    if (fnIds.length) {
+      html += '<div class="footnotes"><ol>';
+      fnIds.forEach((id, i) => {
+        html += '<li id="fn-' + escHtml(id) + '">' + inlineFormat(footnotes[id], footnotes) +
+                '<a class="fn-back" href="#fnref-' + escHtml(id) + '">↩</a></li>';
+      });
+      html += '</ol></div>';
+    }
+
+    return html;
+  }
+
+  function parseBlocks(src) {
     const lines = src.split('\n');
     let html = '';
     let i = 0;
@@ -895,71 +922,70 @@
 
     while (i < len) {
       const line = lines[i];
-
       if (line.trim() === '') { i++; continue; }
 
+      // Code block
       if (/^```/.test(line)) {
         const lang = line.slice(3).trim();
         const codeLines = [];
         i++;
-        while (i < len && !/^```/.test(lines[i])) {
-          codeLines.push(escHtml(lines[i]));
-          i++;
-        }
+        while (i < len && !/^```/.test(lines[i])) { codeLines.push(escHtml(lines[i])); i++; }
         i++;
         html += '<pre><code' + (lang ? ' class="lang-' + escHtml(lang) + '"' : '') + '>' + codeLines.join('\n') + '</code></pre>\n';
         continue;
       }
 
+      // Heading
       const hMatch = line.match(/^(#{1,6})\s+(.*)$/);
       if (hMatch) {
-        const level = hMatch[1].length;
-        html += '<h' + level + '>' + inlineFormat(hMatch[2]) + '</h' + level + '>\n';
+        html += '<h' + hMatch[1].length + '>' + inlineFormat(hMatch[2]) + '</h' + hMatch[1].length + '>\n';
         i++; continue;
       }
 
-      if (/^(\*{3,}|-{3,}|_{3,})\s*$/.test(line.trim())) {
-        html += '<hr>\n';
-        i++; continue;
-      }
+      // HR
+      if (/^(\*{3,}|-{3,}|_{3,})\s*$/.test(line.trim())) { html += '<hr>\n'; i++; continue; }
 
+      // Table
       if (line.includes('|') && i + 1 < len && /^\|?\s*[-:]+[-| :]*$/.test(lines[i + 1])) {
         html += parseTable(lines, i);
         while (i < len && lines[i].includes('|') && lines[i].trim() !== '') i++;
         continue;
       }
 
+      // Blockquote
       if (/^>\s?/.test(line)) {
         const bqLines = [];
-        while (i < len && /^>\s?/.test(lines[i])) {
-          bqLines.push(lines[i].replace(/^>\s?/, ''));
-          i++;
-        }
-        html += '<blockquote>' + parseMd(bqLines.join('\n')) + '</blockquote>\n';
+        while (i < len && /^>\s?/.test(lines[i])) { bqLines.push(lines[i].replace(/^>\s?/, '')); i++; }
+        html += '<blockquote>' + parseBlocks(bqLines.join('\n')) + '</blockquote>\n';
         continue;
       }
 
-      if (/^[\s]*[-*+]\s/.test(line)) {
-        html += parseList(lines, i, 'ul');
-        while (i < len && (/^[\s]*[-*+]\s/.test(lines[i]) || (/^\s+/.test(lines[i]) && lines[i].trim() !== ''))) i++;
+      // Lists (ul or ol) — with nesting
+      if (/^[\s]*[-*+]\s/.test(line) || /^[\s]*\d+\.\s/.test(line)) {
+        const result = parseNestedList(lines, i);
+        html += result.html;
+        i = result.end;
         continue;
       }
 
-      if (/^[\s]*\d+\.\s/.test(line)) {
-        html += parseList(lines, i, 'ol');
-        while (i < len && (/^[\s]*\d+\.\s/.test(lines[i]) || (/^\s+/.test(lines[i]) && lines[i].trim() !== ''))) i++;
-        continue;
+      // HTML safe tags passthrough
+      const htmlMatch = line.match(/^<(\/?)(\w+)([^>]*)>/);
+      if (htmlMatch && SAFE_TAGS.has(htmlMatch[2].toLowerCase())) {
+        html += line + '\n';
+        i++; continue;
       }
 
+      // Paragraph
       const pLines = [];
       while (i < len && lines[i].trim() !== '' &&
              !/^#{1,6}\s/.test(lines[i]) &&
              !/^```/.test(lines[i]) &&
              !/^>\s?/.test(lines[i]) &&
-             !/^[-*+]\s/.test(lines[i].trim()) &&
-             !/^\d+\.\s/.test(lines[i].trim()) &&
+             !/^[\s]*[-*+]\s/.test(lines[i]) &&
+             !/^[\s]*\d+\.\s/.test(lines[i]) &&
              !/^(\*{3,}|-{3,}|_{3,})\s*$/.test(lines[i].trim()) &&
-             !(lines[i].includes('|') && i + 1 < len && /^\|?\s*[-:]+[-| :]*$/.test(lines[i + 1]))) {
+             !(lines[i].includes('|') && i + 1 < len && /^\|?\s*[-:]+[-| :]*$/.test(lines[i + 1])) &&
+             !(/^<(\/?)(\w+)/.test(lines[i]) && SAFE_TAGS.has(lines[i].match(/^<\/?(\w+)/)?.[1]?.toLowerCase()))) {
         pLines.push(lines[i]);
         i++;
       }
@@ -967,15 +993,82 @@
         html += '<p>' + inlineFormat(pLines.join('\n')) + '</p>\n';
       }
     }
-
     return html;
   }
 
+  // --- Nested list parser ---
+  function parseNestedList(lines, start) {
+    const stack = []; // { tag, indent }
+    let html = '';
+    let i = start;
+
+    while (i < lines.length) {
+      const line = lines[i];
+      if (line.trim() === '') { i++; continue; }
+
+      const ulMatch = line.match(/^(\s*)([-*+])\s(.*)$/);
+      const olMatch = line.match(/^(\s*)(\d+)\.\s(.*)$/);
+
+      if (!ulMatch && !olMatch) {
+        // Continuation line (indented text under a list item)
+        if (/^\s+/.test(line) && stack.length > 0) {
+          html += ' ' + inlineFormat(line.trim());
+          i++;
+          continue;
+        }
+        break;
+      }
+
+      const indent = (ulMatch || olMatch)[1].length;
+      const tag = ulMatch ? 'ul' : 'ol';
+      const content = (ulMatch || olMatch)[3];
+
+      // Close deeper or same-level different-type lists
+      while (stack.length > 0) {
+        const top = stack[stack.length - 1];
+        if (top.indent > indent || (top.indent === indent && top.tag !== tag)) {
+          html += '</li></' + top.tag + '>';
+          stack.pop();
+        } else if (top.indent === indent && top.tag === tag) {
+          html += '</li>';
+          break;
+        } else {
+          break;
+        }
+      }
+
+      if (stack.length === 0 || stack[stack.length - 1].indent < indent) {
+        // Open new list level
+        html += '<' + tag + '>';
+        stack.push({ tag, indent });
+      }
+
+      // Task list check
+      const taskMatch = content.match(/^\[([ xX])\]\s(.*)/);
+      if (taskMatch) {
+        const checked = taskMatch[1] !== ' ' ? ' checked' : '';
+        html += '<li class="task-item"><input type="checkbox"' + checked + ' disabled> ' + inlineFormat(taskMatch[2]);
+      } else {
+        html += '<li>' + inlineFormat(content);
+      }
+
+      i++;
+    }
+
+    // Close remaining stack
+    while (stack.length > 0) {
+      const top = stack.pop();
+      html += '</li></' + top.tag + '>';
+    }
+
+    return { html, end: i };
+  }
+
+  // --- Table parser ---
   function parseTable(lines, start) {
     let i = start;
     const headerRow = parseTableRow(lines[i]); i++;
     const alignRow  = lines[i]; i++;
-
     const aligns = alignRow.split('|').filter(c => c.trim() !== '').map(c => {
       c = c.trim();
       if (c.startsWith(':') && c.endsWith(':')) return 'center';
@@ -985,8 +1078,7 @@
 
     let out = '<table><thead><tr>';
     headerRow.forEach((cell, idx) => {
-      const a = aligns[idx] || 'left';
-      out += '<th style="text-align:' + a + '">' + inlineFormat(cell) + '</th>';
+      out += '<th style="text-align:' + (aligns[idx]||'left') + '">' + inlineFormat(cell) + '</th>';
     });
     out += '</tr></thead><tbody>';
 
@@ -994,13 +1086,11 @@
       const cells = parseTableRow(lines[i]);
       out += '<tr>';
       cells.forEach((cell, idx) => {
-        const a = aligns[idx] || 'left';
-        out += '<td style="text-align:' + a + '">' + inlineFormat(cell) + '</td>';
+        out += '<td style="text-align:' + (aligns[idx]||'left') + '">' + inlineFormat(cell) + '</td>';
       });
       out += '</tr>';
       i++;
     }
-
     out += '</tbody></table>\n';
     return out;
   }
@@ -1009,55 +1099,36 @@
     return line.replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim());
   }
 
-  function parseList(lines, start, tag) {
-    const items = [];
-    let i = start;
-    const listPat = tag === 'ul' ? /^[\s]*[-*+]\s(.*)$/ : /^[\s]*\d+\.\s(.*)$/;
-
-    while (i < lines.length) {
-      const m = lines[i].match(listPat);
-      if (m) {
-        let content = m[1];
-        const taskMatch = content.match(/^\[([ xX])\]\s(.*)/);
-        if (taskMatch) {
-          const checked = taskMatch[1] !== ' ' ? ' checked' : '';
-          items.push({ task: true, checked, text: taskMatch[2] });
-        } else {
-          items.push({ task: false, text: content });
-        }
-        i++;
-      } else if (/^\s+/.test(lines[i]) && lines[i].trim() !== '') {
-        if (items.length) items[items.length - 1].text += ' ' + lines[i].trim();
-        i++;
-      } else {
-        break;
-      }
-    }
-
-    let out = '<' + tag + '>\n';
-    for (const item of items) {
-      if (item.task) {
-        out += '<li class="task-item"><input type="checkbox"' + item.checked + ' disabled> ' + inlineFormat(item.text) + '</li>\n';
-      } else {
-        out += '<li>' + inlineFormat(item.text) + '</li>\n';
-      }
-    }
-    out += '</' + tag + '>\n';
-    return out;
-  }
-
-  function inlineFormat(text) {
+  // --- Inline formatting ---
+  function inlineFormat(text, footnotes) {
     let s = escHtml(text);
+    // Safe HTML passthrough (re-enable after escaping)
+    SAFE_TAGS.forEach(tag => {
+      const re = new RegExp('&lt;(' + tag + ')(\\s[^&]*?)?&gt;', 'gi');
+      s = s.replace(re, '<$1$2>');
+      const rc = new RegExp('&lt;/' + tag + '&gt;', 'gi');
+      s = s.replace(rc, '</' + tag + '>');
+    });
+    // Images
     s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+    // Links
     s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    // Footnote refs
+    s = s.replace(/\[\^(\w+)\]/g, '<sup class="fn-ref"><a id="fnref-$1" href="#fn-$1">$1</a></sup>');
+    // Bold+italic
     s = s.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
     s = s.replace(/___(.+?)___/g, '<strong><em>$1</em></strong>');
+    // Bold
     s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     s = s.replace(/__(.+?)__/g, '<strong>$1</strong>');
+    // Italic
     s = s.replace(/\*(.+?)\*/g, '<em>$1</em>');
     s = s.replace(/_(.+?)_/g, '<em>$1</em>');
+    // Strikethrough
     s = s.replace(/~~(.+?)~~/g, '<del>$1</del>');
+    // Inline code
     s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+    // Line breaks
     s = s.replace(/\n/g, '<br>');
     return s;
   }
@@ -1067,6 +1138,5 @@
   }
 })();
 </script>
-
 </body>
 </html>
