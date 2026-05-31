@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#111111" media="(prefers-color-scheme: dark)">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<title>mdview</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-surface: #f5f5f0;
+    --text: #1a1a1a;
+    --text-muted: #6b6b6b;
+    --accent: #2a5a8a;
+    --border: #ddd;
+    --code-bg: #f0efe8;
+    --blockquote-border: #c0c0b0;
+    --shadow: rgba(0,0,0,0.08);
+    --font-body: 'Georgia', 'Times New Roman', serif;
+    --font-mono: 'Courier New', 'Courier', monospace;
+    --font-ui: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #111111;
+      --bg-surface: #1a1a1a;
+      --text: #d8d8d8;
+      --text-muted: #888;
+      --accent: #6aafe6;
+      --border: #333;
+      --code-bg: #1e1e1e;
+      --blockquote-border: #555;
+      --shadow: rgba(0,0,0,0.3);
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    font-size: 17px;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    min-height: 100dvh;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  /* ---- Landing screen ---- */
+  .landing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100dvh;
+    padding: 2rem;
+    text-align: center;
+  }
+
+  .landing-logo {
+    font-family: var(--font-mono);
+    font-size: 2.5rem;
+    font-weight: bold;
+    letter-spacing: -0.05em;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+
+  .landing-logo span {
+    color: var(--accent);
+  }
+
+  .landing-sub {
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+    letter-spacing: 0.02em;
+  }
+
+  .open-btn {
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    font-weight: 600;
+    padding: 0.85rem 2.5rem;
+    border: none;
+    border-radius: 8px;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: transform 0.1s, box-shadow 0.15s;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+
+  .open-btn:active {
+    transform: scale(0.97);
+  }
+
+  .drop-hint {
+    font-family: var(--font-ui);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 1.5rem;
+  }
+
+  /* ---- Reader screen ---- */
+  .reader {
+    display: none;
+    flex-direction: column;
+    min-height: 100dvh;
+  }
+
+  .reader.active {
+    display: flex;
+  }
+
+  .toolbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-ui);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .toolbar-back {
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: var(--accent);
+    padding: 0.2rem 0.4rem;
+    line-height: 1;
+    touch-action: manipulation;
+  }
+
+  .toolbar-filename {
+    flex: 1;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .toolbar-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  /* ---- Markdown content ---- */
+  .md-content {
+    flex: 1;
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 4rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .md-content h1, .md-content h2, .md-content h3,
+  .md-content h4, .md-content h5, .md-content h6 {
+    font-family: var(--font-ui);
+    line-height: 1.3;
+    margin: 1.6em 0 0.5em;
+    color: var(--text);
+  }
+
+  .md-content h1 { font-size: 1.8rem; margin-top: 0.5em; }
+  .md-content h2 { font-size: 1.4rem; border-bottom: 1px solid var(--border); padding-bottom: 0.3em; }
+  .md-content h3 { font-size: 1.15rem; }
+  .md-content h4 { font-size: 1rem; }
+  .md-content h5 { font-size: 0.9rem; }
+  .md-content h6 { font-size: 0.85rem; color: var(--text-muted); }
+
+  .md-content p {
+    margin: 0.8em 0;
+  }
+
+  .md-content a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  .md-content strong { font-weight: 700; }
+  .md-content em { font-style: italic; }
+
+  .md-content code {
+    font-family: var(--font-mono);
+    font-size: 0.88em;
+    background: var(--code-bg);
+    padding: 0.15em 0.35em;
+    border-radius: 4px;
+  }
+
+  .md-content pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1em 0;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .md-content pre code {
+    background: none;
+    padding: 0;
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .md-content blockquote {
+    border-left: 3px solid var(--blockquote-border);
+    margin: 1em 0;
+    padding: 0.4em 0 0.4em 1em;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .md-content ul, .md-content ol {
+    margin: 0.6em 0;
+    padding-left: 1.8em;
+  }
+
+  .md-content li {
+    margin: 0.25em 0;
+  }
+
+  .md-content li > ul, .md-content li > ol {
+    margin: 0.15em 0;
+  }
+
+  .md-content hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2em 0;
+  }
+
+  .md-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin: 0.5em 0;
+  }
+
+  .md-content .task-item {
+    list-style: none;
+    margin-left: -1.3em;
+  }
+
+  .md-content .task-item input {
+    margin-right: 0.4em;
+    pointer-events: none;
+  }
+
+  /* ---- Raw source view ---- */
+  .raw-source {
+    display: none;
+    flex: 1;
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem 4rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--text-muted);
+  }
+
+  /* Hide file input */
+  #file-input { display: none; }
+</style>
+</head>
+<body>
+
+<!-- Landing -->
+<div class="landing" id="landing">
+  <div class="landing-logo">md<span>view</span></div>
+  <div class="landing-sub">markdown reader</div>
+  <button class="open-btn" id="open-btn">Open File</button>
+  <div class="drop-hint">.md files only · fully offline</div>
+</div>
+
+<!-- Reader -->
+<div class="reader" id="reader">
+  <div class="toolbar">
+    <button class="toolbar-back" id="back-btn" aria-label="Back">←</button>
+    <div class="toolbar-filename" id="filename">file.md</div>
+    <button class="toolbar-btn" id="toggle-raw">Source</button>
+    <button class="toolbar-btn" id="open-another">Open</button>
+  </div>
+  <div class="md-content" id="md-content"></div>
+  <pre class="raw-source" id="raw-source"></pre>
+</div>
+
+<input type="file" id="file-input" accept=".md,.markdown,.txt,text/markdown,text/plain">
+
+<script>
+(function() {
+  // --- Elements ---
+  const landing    = document.getElementById('landing');
+  const reader     = document.getElementById('reader');
+  const openBtn    = document.getElementById('open-btn');
+  const backBtn    = document.getElementById('back-btn');
+  const toggleRaw  = document.getElementById('toggle-raw');
+  const openMore   = document.getElementById('open-another');
+  const fileInput  = document.getElementById('file-input');
+  const mdContent  = document.getElementById('md-content');
+  const rawSource  = document.getElementById('raw-source');
+  const filenameEl = document.getElementById('filename');
+
+  let showingRaw = false;
+
+  // --- Navigation ---
+  function showReader(name, html, raw) {
+    filenameEl.textContent = name;
+    mdContent.innerHTML = html;
+    rawSource.textContent = raw;
+    showingRaw = false;
+    mdContent.style.display = '';
+    rawSource.style.display = 'none';
+    toggleRaw.textContent = 'Source';
+    landing.style.display = 'none';
+    reader.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  function showLanding() {
+    reader.classList.remove('active');
+    landing.style.display = '';
+  }
+
+  openBtn.addEventListener('click', () => fileInput.click());
+  openMore.addEventListener('click', () => fileInput.click());
+  backBtn.addEventListener('click', showLanding);
+
+  toggleRaw.addEventListener('click', () => {
+    showingRaw = !showingRaw;
+    mdContent.style.display = showingRaw ? 'none' : '';
+    rawSource.style.display = showingRaw ? 'block' : 'none';
+    toggleRaw.textContent = showingRaw ? 'Rendered' : 'Source';
+  });
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      const raw = r.result;
+      const html = parseMd(raw);
+      showReader(file.name, html, raw);
+    };
+    r.readAsText(file);
+    fileInput.value = '';
+  });
+
+  // --- Markdown Parser ---
+  function parseMd(src) {
+    const lines = src.split('\n');
+    let html = '';
+    let i = 0;
+    const len = lines.length;
+
+    while (i < len) {
+      const line = lines[i];
+
+      // Blank line
+      if (line.trim() === '') { i++; continue; }
+
+      // Code block (fenced)
+      if (/^```/.test(line)) {
+        const lang = line.slice(3).trim();
+        const codeLines = [];
+        i++;
+        while (i < len && !/^```/.test(lines[i])) {
+          codeLines.push(escHtml(lines[i]));
+          i++;
+        }
+        i++; // skip closing ```
+        html += '<pre><code' + (lang ? ' class="lang-' + escHtml(lang) + '"' : '') + '>' + codeLines.join('\n') + '</code></pre>\n';
+        continue;
+      }
+
+      // Heading
+      const hMatch = line.match(/^(#{1,6})\s+(.*)$/);
+      if (hMatch) {
+        const level = hMatch[1].length;
+        html += '<h' + level + '>' + inlineFormat(hMatch[2]) + '</h' + level + '>\n';
+        i++; continue;
+      }
+
+      // Horizontal rule
+      if (/^(\*{3,}|-{3,}|_{3,})\s*$/.test(line.trim())) {
+        html += '<hr>\n';
+        i++; continue;
+      }
+
+      // Blockquote
+      if (/^>\s?/.test(line)) {
+        const bqLines = [];
+        while (i < len && /^>\s?/.test(lines[i])) {
+          bqLines.push(lines[i].replace(/^>\s?/, ''));
+          i++;
+        }
+        html += '<blockquote>' + parseMd(bqLines.join('\n')) + '</blockquote>\n';
+        continue;
+      }
+
+      // Unordered list
+      if (/^[\s]*[-*+]\s/.test(line)) {
+        html += parseList(lines, i, 'ul');
+        while (i < len && (/^[\s]*[-*+]\s/.test(lines[i]) || (/^\s+/.test(lines[i]) && lines[i].trim() !== ''))) i++;
+        continue;
+      }
+
+      // Ordered list
+      if (/^[\s]*\d+\.\s/.test(line)) {
+        html += parseList(lines, i, 'ol');
+        while (i < len && (/^[\s]*\d+\.\s/.test(lines[i]) || (/^\s+/.test(lines[i]) && lines[i].trim() !== ''))) i++;
+        continue;
+      }
+
+      // Paragraph — collect contiguous non-blank, non-special lines
+      const pLines = [];
+      while (i < len && lines[i].trim() !== '' &&
+             !/^#{1,6}\s/.test(lines[i]) &&
+             !/^```/.test(lines[i]) &&
+             !/^>\s?/.test(lines[i]) &&
+             !/^[-*+]\s/.test(lines[i].trim()) &&
+             !/^\d+\.\s/.test(lines[i].trim()) &&
+             !/^(\*{3,}|-{3,}|_{3,})\s*$/.test(lines[i].trim())) {
+        pLines.push(lines[i]);
+        i++;
+      }
+      if (pLines.length) {
+        html += '<p>' + inlineFormat(pLines.join('\n')) + '</p>\n';
+      }
+    }
+
+    return html;
+  }
+
+  function parseList(lines, start, tag) {
+    const items = [];
+    let i = start;
+    const listPat = tag === 'ul' ? /^[\s]*[-*+]\s(.*)$/ : /^[\s]*\d+\.\s(.*)$/;
+
+    while (i < lines.length) {
+      const m = lines[i].match(listPat);
+      if (m) {
+        let content = m[1];
+        // Task list
+        const taskMatch = content.match(/^\[([ xX])\]\s(.*)/);
+        if (taskMatch) {
+          const checked = taskMatch[1] !== ' ' ? ' checked' : '';
+          items.push({ task: true, checked, text: taskMatch[2] });
+        } else {
+          items.push({ task: false, text: content });
+        }
+        i++;
+      } else if (/^\s+/.test(lines[i]) && lines[i].trim() !== '') {
+        // Continuation line
+        if (items.length) items[items.length - 1].text += ' ' + lines[i].trim();
+        i++;
+      } else {
+        break;
+      }
+    }
+
+    let out = '<' + tag + '>\n';
+    for (const item of items) {
+      if (item.task) {
+        out += '<li class="task-item"><input type="checkbox"' + item.checked + ' disabled> ' + inlineFormat(item.text) + '</li>\n';
+      } else {
+        out += '<li>' + inlineFormat(item.text) + '</li>\n';
+      }
+    }
+    out += '</' + tag + '>\n';
+    return out;
+  }
+
+  function inlineFormat(text) {
+    let s = escHtml(text);
+    // Images (before links)
+    s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+    // Links
+    s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    // Bold+italic
+    s = s.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+    s = s.replace(/___(.+?)___/g, '<strong><em>$1</em></strong>');
+    // Bold
+    s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    s = s.replace(/__(.+?)__/g, '<strong>$1</strong>');
+    // Italic
+    s = s.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    s = s.replace(/_(.+?)_/g, '<em>$1</em>');
+    // Strikethrough
+    s = s.replace(/~~(.+?)~~/g, '<del>$1</del>');
+    // Inline code
+    s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+    // Line breaks
+    s = s.replace(/\n/g, '<br>');
+    return s;
+  }
+
+  function escHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+})();
+</script>
+
+</body>
+</html>
