@@ -1,8 +1,8 @@
 # Test Document
 
-This is a **test file** for _mdview_.
+This is a **test file** for _mdview_ v2.1.
 
-## Features
+## Inline Formatting
 
 - Bold text: **hello world**
 - Italic text: *hello world*
@@ -28,6 +28,19 @@ Check out [Anthropic](https://anthropic.com) for more.
 > The best way to predict the future is to invent it.
 > — Alan Kay
 
+## Nested Lists
+
+- Top level item
+  - Second level
+    - Third level
+    - Another third
+  - Back to second
+- Another top level
+  1. Nested ordered
+  2. Second ordered
+     - Mixed nesting
+     - Goes deep
+
 ## Ordered List
 
 1. First item
@@ -39,7 +52,10 @@ Check out [Anthropic](https://anthropic.com) for more.
 - [x] Build markdown parser
 - [x] Add dark mode
 - [x] Add tables
-- [ ] Add editor (V2)
+- [x] Add nested lists
+- [x] Add footnotes
+- [ ] Add editor (V2) ✓
+- [ ] World domination
 
 ## Table
 
@@ -47,12 +63,27 @@ Check out [Anthropic](https://anthropic.com) for more.
 |---------|:------:|-------:|
 | Viewer | Done | High |
 | Tables | Done | Medium |
-| Editor | Planned | Low |
-| Dark mode | Done | High |
+| Editor | Done | High |
+| Nested lists | Done | Medium |
+| Footnotes | Done | Low |
 
-## Nested Content
+## Footnotes
 
-Here's a paragraph with `inline code` and a [link](https://example.com) and some **bold text** all mixed together.
+This is a sentence with a footnote[^1]. Here's another one[^note].
+
+[^1]: This is the first footnote content.
+[^note]: And this is a named footnote.
+
+## HTML Passthrough
+
+<details>
+<summary>Click to expand</summary>
+
+This content is hidden by default. It uses the HTML `details` and `summary` tags.
+
+</details>
+
+Text with <mark>highlighted</mark> words and <kbd>Ctrl</kbd>+<kbd>S</kbd> keyboard shortcuts.
 
 ---
 
