@@ -295,6 +295,75 @@
     color: var(--text-muted);
   }
 
+  /* ---- Tables ---- */
+  .md-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+    font-family: var(--font-ui);
+    font-size: 0.88rem;
+    overflow-x: auto;
+    display: block;
+  }
+
+  .md-content th, .md-content td {
+    border: 1px solid var(--border);
+    padding: 0.5em 0.75em;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .md-content th {
+    background: var(--bg-surface);
+    font-weight: 600;
+  }
+
+  /* ---- Scroll to top ---- */
+  .scroll-top {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    color: var(--text-muted);
+    font-size: 1.2rem;
+    cursor: pointer;
+    touch-action: manipulation;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    box-shadow: 0 2px 8px var(--shadow);
+    z-index: 20;
+  }
+
+  .scroll-top.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  /* ---- Drag & drop overlay ---- */
+  .drop-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0,0,0,0.15);
+    border: 3px dashed var(--accent);
+    justify-content: center;
+    align-items: center;
+    font-family: var(--font-ui);
+    font-size: 1.2rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .drop-overlay.active {
+    display: flex;
+  }
+
   /* Hide file input */
   #file-input { display: none; }
 </style>
@@ -322,26 +391,43 @@
 </div>
 
 <input type="file" id="file-input" accept=".md,.markdown,.txt,text/markdown,text/plain">
+<button class="scroll-top" id="scroll-top" aria-label="Scroll to top">↑</button>
+<div class="drop-overlay" id="drop-overlay">Drop .md file here</div>
 
 <script>
 (function() {
   // --- Elements ---
-  const landing    = document.getElementById('landing');
-  const reader     = document.getElementById('reader');
-  const openBtn    = document.getElementById('open-btn');
-  const backBtn    = document.getElementById('back-btn');
-  const toggleRaw  = document.getElementById('toggle-raw');
-  const openMore   = document.getElementById('open-another');
-  const fileInput  = document.getElementById('file-input');
-  const mdContent  = document.getElementById('md-content');
-  const rawSource  = document.getElementById('raw-source');
-  const filenameEl = document.getElementById('filename');
+  const landing     = document.getElementById('landing');
+  const reader      = document.getElementById('reader');
+  const openBtn     = document.getElementById('open-btn');
+  const backBtn     = document.getElementById('back-btn');
+  const toggleRaw   = document.getElementById('toggle-raw');
+  const openMore    = document.getElementById('open-another');
+  const fileInput   = document.getElementById('file-input');
+  const mdContent   = document.getElementById('md-content');
+  const rawSource   = document.getElementById('raw-source');
+  const filenameEl  = document.getElementById('filename');
+  const scrollTopEl = document.getElementById('scroll-top');
+  const dropOverlay = document.getElementById('drop-overlay');
 
   let showingRaw = false;
+
+  // --- File handler ---
+  function handleFile(file) {
+    if (!file) return;
+    const r = new FileReader();
+    r.onload = () => {
+      const raw = r.result;
+      const html = parseMd(raw);
+      showReader(file.name, html, raw);
+    };
+    r.readAsText(file);
+  }
 
   // --- Navigation ---
   function showReader(name, html, raw) {
     filenameEl.textContent = name;
+    document.title = name + ' — mdview';
     mdContent.innerHTML = html;
     rawSource.textContent = raw;
     showingRaw = false;
@@ -356,6 +442,7 @@
   function showLanding() {
     reader.classList.remove('active');
     landing.style.display = '';
+    document.title = 'mdview';
   }
 
   openBtn.addEventListener('click', () => fileInput.click());
@@ -370,16 +457,45 @@
   });
 
   fileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const r = new FileReader();
-    r.onload = () => {
-      const raw = r.result;
-      const html = parseMd(raw);
-      showReader(file.name, html, raw);
-    };
-    r.readAsText(file);
+    handleFile(e.target.files[0]);
     fileInput.value = '';
+  });
+
+  // --- Scroll to top ---
+  window.addEventListener('scroll', () => {
+    scrollTopEl.classList.toggle('visible', window.scrollY > 400);
+  }, { passive: true });
+
+  scrollTopEl.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // --- Drag & drop ---
+  let dragCounter = 0;
+
+  document.addEventListener('dragenter', (e) => {
+    e.preventDefault();
+    dragCounter++;
+    dropOverlay.classList.add('active');
+  });
+
+  document.addEventListener('dragleave', (e) => {
+    e.preventDefault();
+    dragCounter--;
+    if (dragCounter <= 0) {
+      dragCounter = 0;
+      dropOverlay.classList.remove('active');
+    }
+  });
+
+  document.addEventListener('dragover', (e) => e.preventDefault());
+
+  document.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dragCounter = 0;
+    dropOverlay.classList.remove('active');
+    const file = e.dataTransfer.files[0];
+    if (file) handleFile(file);
   });
 
   // --- Markdown Parser ---
@@ -423,6 +539,14 @@
         i++; continue;
       }
 
+      // Table
+      if (line.includes('|') && i + 1 < len && /^\|?\s*[-:]+[-| :]*$/.test(lines[i + 1])) {
+        html += parseTable(lines, i);
+        // skip past table rows
+        while (i < len && lines[i].includes('|') && lines[i].trim() !== '') i++;
+        continue;
+      }
+
       // Blockquote
       if (/^>\s?/.test(line)) {
         const bqLines = [];
@@ -448,7 +572,7 @@
         continue;
       }
 
-      // Paragraph — collect contiguous non-blank, non-special lines
+      // Paragraph
       const pLines = [];
       while (i < len && lines[i].trim() !== '' &&
              !/^#{1,6}\s/.test(lines[i]) &&
@@ -456,7 +580,8 @@
              !/^>\s?/.test(lines[i]) &&
              !/^[-*+]\s/.test(lines[i].trim()) &&
              !/^\d+\.\s/.test(lines[i].trim()) &&
-             !/^(\*{3,}|-{3,}|_{3,})\s*$/.test(lines[i].trim())) {
+             !/^(\*{3,}|-{3,}|_{3,})\s*$/.test(lines[i].trim()) &&
+             !(lines[i].includes('|') && i + 1 < len && /^\|?\s*[-:]+[-| :]*$/.test(lines[i + 1]))) {
         pLines.push(lines[i]);
         i++;
       }
@@ -468,6 +593,46 @@
     return html;
   }
 
+  // --- Table parser ---
+  function parseTable(lines, start) {
+    let i = start;
+    const headerRow = parseTableRow(lines[i]); i++;
+    const alignRow  = lines[i]; i++;
+
+    // Parse alignment
+    const aligns = alignRow.split('|').filter(c => c.trim() !== '').map(c => {
+      c = c.trim();
+      if (c.startsWith(':') && c.endsWith(':')) return 'center';
+      if (c.endsWith(':')) return 'right';
+      return 'left';
+    });
+
+    let out = '<table><thead><tr>';
+    headerRow.forEach((cell, idx) => {
+      const a = aligns[idx] || 'left';
+      out += '<th style="text-align:' + a + '">' + inlineFormat(cell) + '</th>';
+    });
+    out += '</tr></thead><tbody>';
+
+    while (i < lines.length && lines[i].includes('|') && lines[i].trim() !== '') {
+      const cells = parseTableRow(lines[i]);
+      out += '<tr>';
+      cells.forEach((cell, idx) => {
+        const a = aligns[idx] || 'left';
+        out += '<td style="text-align:' + a + '">' + inlineFormat(cell) + '</td>';
+      });
+      out += '</tr>';
+      i++;
+    }
+
+    out += '</tbody></table>\n';
+    return out;
+  }
+
+  function parseTableRow(line) {
+    return line.replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim());
+  }
+
   function parseList(lines, start, tag) {
     const items = [];
     let i = start;
@@ -477,7 +642,6 @@
       const m = lines[i].match(listPat);
       if (m) {
         let content = m[1];
-        // Task list
         const taskMatch = content.match(/^\[([ xX])\]\s(.*)/);
         if (taskMatch) {
           const checked = taskMatch[1] !== ' ' ? ' checked' : '';
@@ -487,7 +651,6 @@
         }
         i++;
       } else if (/^\s+/.test(lines[i]) && lines[i].trim() !== '') {
-        // Continuation line
         if (items.length) items[items.length - 1].text += ' ' + lines[i].trim();
         i++;
       } else {
@@ -509,24 +672,16 @@
 
   function inlineFormat(text) {
     let s = escHtml(text);
-    // Images (before links)
     s = s.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
-    // Links
     s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
-    // Bold+italic
     s = s.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
     s = s.replace(/___(.+?)___/g, '<strong><em>$1</em></strong>');
-    // Bold
     s = s.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
     s = s.replace(/__(.+?)__/g, '<strong>$1</strong>');
-    // Italic
     s = s.replace(/\*(.+?)\*/g, '<em>$1</em>');
     s = s.replace(/_(.+?)_/g, '<em>$1</em>');
-    // Strikethrough
     s = s.replace(/~~(.+?)~~/g, '<del>$1</del>');
-    // Inline code
     s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
-    // Line breaks
     s = s.replace(/\n/g, '<br>');
     return s;
   }
