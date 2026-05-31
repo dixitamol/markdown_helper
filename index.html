@@ -74,9 +74,7 @@
     margin-bottom: 0.25rem;
   }
 
-  .landing-logo span {
-    color: var(--accent);
-  }
+  .landing-logo span { color: var(--accent); }
 
   .landing-sub {
     font-family: var(--font-ui);
@@ -86,24 +84,38 @@
     letter-spacing: 0.02em;
   }
 
-  .open-btn {
+  .landing-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .open-btn, .new-btn {
     font-family: var(--font-ui);
     font-size: 1rem;
     font-weight: 600;
     padding: 0.85rem 2.5rem;
     border: none;
     border-radius: 8px;
-    background: var(--accent);
-    color: #fff;
     cursor: pointer;
     touch-action: manipulation;
     transition: transform 0.1s, box-shadow 0.15s;
     box-shadow: 0 2px 8px var(--shadow);
   }
 
-  .open-btn:active {
-    transform: scale(0.97);
+  .open-btn {
+    background: var(--accent);
+    color: #fff;
   }
+
+  .new-btn {
+    background: var(--bg-surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .open-btn:active, .new-btn:active { transform: scale(0.97); }
 
   .drop-hint {
     font-family: var(--font-ui);
@@ -112,16 +124,14 @@
     margin-top: 1.5rem;
   }
 
-  /* ---- Reader screen ---- */
+  /* ---- Reader/Editor screen ---- */
   .reader {
     display: none;
     flex-direction: column;
     min-height: 100dvh;
   }
 
-  .reader.active {
-    display: flex;
-  }
+  .reader.active { display: flex; }
 
   .toolbar {
     position: sticky;
@@ -136,6 +146,7 @@
     font-family: var(--font-ui);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
+    flex-wrap: wrap;
   }
 
   .toolbar-back {
@@ -157,6 +168,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    min-width: 60px;
   }
 
   .toolbar-btn {
@@ -170,6 +182,49 @@
     cursor: pointer;
     touch-action: manipulation;
   }
+
+  .toolbar-btn.active-mode {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  .toolbar-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+
+  /* ---- Formatting toolbar ---- */
+  .fmt-bar {
+    display: none;
+    gap: 0.25rem;
+    padding: 0.4rem 1rem;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    font-family: var(--font-ui);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    flex-wrap: nowrap;
+  }
+
+  .fmt-bar.visible { display: flex; }
+
+  .fmt-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text);
+    padding: 0.35rem 0.55rem;
+    cursor: pointer;
+    touch-action: manipulation;
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .fmt-btn:active { background: var(--accent); color: #fff; }
 
   /* ---- Markdown content ---- */
   .md-content {
@@ -197,9 +252,7 @@
   .md-content h5 { font-size: 0.9rem; }
   .md-content h6 { font-size: 0.85rem; color: var(--text-muted); }
 
-  .md-content p {
-    margin: 0.8em 0;
-  }
+  .md-content p { margin: 0.8em 0; }
 
   .md-content a {
     color: var(--accent);
@@ -248,13 +301,8 @@
     padding-left: 1.8em;
   }
 
-  .md-content li {
-    margin: 0.25em 0;
-  }
-
-  .md-content li > ul, .md-content li > ol {
-    margin: 0.15em 0;
-  }
+  .md-content li { margin: 0.25em 0; }
+  .md-content li > ul, .md-content li > ol { margin: 0.15em 0; }
 
   .md-content hr {
     border: none;
@@ -279,6 +327,80 @@
     pointer-events: none;
   }
 
+  .md-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1em 0;
+    font-family: var(--font-ui);
+    font-size: 0.88rem;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .md-content th, .md-content td {
+    border: 1px solid var(--border);
+    padding: 0.5em 0.75em;
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  .md-content th {
+    background: var(--bg-surface);
+    font-weight: 600;
+  }
+
+  /* ---- Editor ---- */
+  .editor-area {
+    display: none;
+    flex: 1;
+    max-width: 680px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0;
+    flex-direction: column;
+  }
+
+  .editor-area.visible {
+    display: flex;
+  }
+
+  .editor-textarea {
+    flex: 1;
+    width: 100%;
+    min-height: calc(100dvh - 140px);
+    padding: 1.5rem 1.25rem 4rem;
+    border: none;
+    outline: none;
+    resize: none;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    line-height: 1.7;
+    tab-size: 2;
+    -moz-tab-size: 2;
+  }
+
+  /* ---- Status bar ---- */
+  .status-bar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.35rem 1rem;
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-ui);
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
+    z-index: 10;
+  }
+
+  .status-bar.visible { display: flex; }
+
   /* ---- Raw source view ---- */
   .raw-source {
     display: none;
@@ -293,29 +415,6 @@
     white-space: pre-wrap;
     word-break: break-word;
     color: var(--text-muted);
-  }
-
-  /* ---- Tables ---- */
-  .md-content table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1em 0;
-    font-family: var(--font-ui);
-    font-size: 0.88rem;
-    overflow-x: auto;
-    display: block;
-  }
-
-  .md-content th, .md-content td {
-    border: 1px solid var(--border);
-    padding: 0.5em 0.75em;
-    text-align: left;
-    white-space: nowrap;
-  }
-
-  .md-content th {
-    background: var(--bg-surface);
-    font-weight: 600;
   }
 
   /* ---- Scroll to top ---- */
@@ -360,9 +459,19 @@
     font-weight: 600;
   }
 
-  .drop-overlay.active {
-    display: flex;
+  .drop-overlay.active { display: flex; }
+
+  /* ---- Unsaved indicator ---- */
+  .unsaved-dot {
+    display: none;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
   }
+
+  .unsaved-dot.visible { display: inline-block; }
 
   /* Hide file input */
   #file-input { display: none; }
@@ -373,21 +482,50 @@
 <!-- Landing -->
 <div class="landing" id="landing">
   <div class="landing-logo">md<span>view</span></div>
-  <div class="landing-sub">markdown reader</div>
-  <button class="open-btn" id="open-btn">Open File</button>
-  <div class="drop-hint">.md files only · fully offline</div>
+  <div class="landing-sub">markdown reader & editor</div>
+  <div class="landing-actions">
+    <button class="open-btn" id="open-btn">Open File</button>
+    <button class="new-btn" id="new-btn">New File</button>
+  </div>
+  <div class="drop-hint">.md files · fully offline · single file</div>
 </div>
 
-<!-- Reader -->
+<!-- Reader/Editor -->
 <div class="reader" id="reader">
   <div class="toolbar">
     <button class="toolbar-back" id="back-btn" aria-label="Back">←</button>
+    <span class="unsaved-dot" id="unsaved-dot"></span>
     <div class="toolbar-filename" id="filename">file.md</div>
+    <button class="toolbar-btn" id="toggle-edit">Edit</button>
     <button class="toolbar-btn" id="toggle-raw">Source</button>
+    <button class="toolbar-btn" id="save-btn" style="display:none">Save</button>
     <button class="toolbar-btn" id="open-another">Open</button>
+  </div>
+  <div class="fmt-bar" id="fmt-bar">
+    <button class="fmt-btn" data-fmt="bold" title="Bold (Ctrl+B)"><b>B</b></button>
+    <button class="fmt-btn" data-fmt="italic" title="Italic (Ctrl+I)"><i>I</i></button>
+    <button class="fmt-btn" data-fmt="code" title="Code">&#96;</button>
+    <button class="fmt-btn" data-fmt="h1" title="Heading 1">H1</button>
+    <button class="fmt-btn" data-fmt="h2" title="Heading 2">H2</button>
+    <button class="fmt-btn" data-fmt="h3" title="Heading 3">H3</button>
+    <button class="fmt-btn" data-fmt="link" title="Link">[&#8202;]</button>
+    <button class="fmt-btn" data-fmt="ul" title="Bullet list">•</button>
+    <button class="fmt-btn" data-fmt="ol" title="Numbered list">1.</button>
+    <button class="fmt-btn" data-fmt="task" title="Task">☑</button>
+    <button class="fmt-btn" data-fmt="quote" title="Blockquote">></button>
+    <button class="fmt-btn" data-fmt="codeblock" title="Code block">```</button>
+    <button class="fmt-btn" data-fmt="hr" title="Horizontal rule">—</button>
+    <button class="fmt-btn" data-fmt="table" title="Table">⊞</button>
   </div>
   <div class="md-content" id="md-content"></div>
   <pre class="raw-source" id="raw-source"></pre>
+  <div class="editor-area" id="editor-area">
+    <textarea class="editor-textarea" id="editor-textarea" spellcheck="true" autocomplete="off" autocapitalize="sentences"></textarea>
+  </div>
+  <div class="status-bar" id="status-bar">
+    <span id="word-count"></span>
+    <span id="char-count"></span>
+  </div>
 </div>
 
 <input type="file" id="file-input" accept=".md,.markdown,.txt,text/markdown,text/plain">
@@ -397,69 +535,311 @@
 <script>
 (function() {
   // --- Elements ---
-  const landing     = document.getElementById('landing');
-  const reader      = document.getElementById('reader');
-  const openBtn     = document.getElementById('open-btn');
-  const backBtn     = document.getElementById('back-btn');
-  const toggleRaw   = document.getElementById('toggle-raw');
-  const openMore    = document.getElementById('open-another');
-  const fileInput   = document.getElementById('file-input');
-  const mdContent   = document.getElementById('md-content');
-  const rawSource   = document.getElementById('raw-source');
-  const filenameEl  = document.getElementById('filename');
-  const scrollTopEl = document.getElementById('scroll-top');
-  const dropOverlay = document.getElementById('drop-overlay');
+  const landing      = document.getElementById('landing');
+  const reader       = document.getElementById('reader');
+  const openBtn      = document.getElementById('open-btn');
+  const newBtn       = document.getElementById('new-btn');
+  const backBtn      = document.getElementById('back-btn');
+  const toggleEdit   = document.getElementById('toggle-edit');
+  const toggleRaw    = document.getElementById('toggle-raw');
+  const saveBtn      = document.getElementById('save-btn');
+  const openMore     = document.getElementById('open-another');
+  const fileInput    = document.getElementById('file-input');
+  const mdContent    = document.getElementById('md-content');
+  const rawSource    = document.getElementById('raw-source');
+  const editorArea   = document.getElementById('editor-area');
+  const editorTA     = document.getElementById('editor-textarea');
+  const fmtBar       = document.getElementById('fmt-bar');
+  const filenameEl   = document.getElementById('filename');
+  const scrollTopEl  = document.getElementById('scroll-top');
+  const dropOverlay  = document.getElementById('drop-overlay');
+  const statusBar    = document.getElementById('status-bar');
+  const wordCountEl  = document.getElementById('word-count');
+  const charCountEl  = document.getElementById('char-count');
+  const unsavedDot   = document.getElementById('unsaved-dot');
 
-  let showingRaw = false;
+  // --- State ---
+  let mode = 'view'; // 'view' | 'edit' | 'source'
+  let currentRaw = '';
+  let currentName = 'untitled.md';
+  let fileHandle = null; // for save-in-place
+  let hasUnsaved = false;
 
   // --- File handler ---
   function handleFile(file) {
     if (!file) return;
     const r = new FileReader();
     r.onload = () => {
-      const raw = r.result;
-      const html = parseMd(raw);
-      showReader(file.name, html, raw);
+      currentRaw = r.result;
+      currentName = file.name;
+      fileHandle = null;
+      hasUnsaved = false;
+      enterView();
     };
     r.readAsText(file);
   }
 
-  // --- Navigation ---
-  function showReader(name, html, raw) {
-    filenameEl.textContent = name;
-    document.title = name + ' — mdview';
-    mdContent.innerHTML = html;
-    rawSource.textContent = raw;
-    showingRaw = false;
+  // --- Mode switching ---
+  function enterView() {
+    mode = 'view';
+    filenameEl.textContent = currentName;
+    document.title = currentName + ' — mdview';
+    mdContent.innerHTML = parseMd(currentRaw);
     mdContent.style.display = '';
     rawSource.style.display = 'none';
+    editorArea.classList.remove('visible');
+    fmtBar.classList.remove('visible');
+    statusBar.classList.remove('visible');
+    toggleEdit.textContent = 'Edit';
+    toggleEdit.classList.remove('active-mode');
     toggleRaw.textContent = 'Source';
+    saveBtn.style.display = 'none';
+    unsavedDot.classList.toggle('visible', hasUnsaved);
     landing.style.display = 'none';
     reader.classList.add('active');
     window.scrollTo(0, 0);
   }
 
+  function enterEdit() {
+    mode = 'edit';
+    editorTA.value = currentRaw;
+    mdContent.style.display = 'none';
+    rawSource.style.display = 'none';
+    editorArea.classList.add('visible');
+    fmtBar.classList.add('visible');
+    statusBar.classList.add('visible');
+    toggleEdit.textContent = 'Preview';
+    toggleEdit.classList.add('active-mode');
+    toggleRaw.textContent = 'Source';
+    saveBtn.style.display = '';
+    updateCounts();
+    editorTA.focus();
+  }
+
+  function enterSource() {
+    mode = 'source';
+    rawSource.textContent = currentRaw;
+    mdContent.style.display = 'none';
+    editorArea.classList.remove('visible');
+    fmtBar.classList.remove('visible');
+    statusBar.classList.remove('visible');
+    rawSource.style.display = 'block';
+    toggleRaw.textContent = 'Rendered';
+    toggleEdit.textContent = 'Edit';
+    toggleEdit.classList.remove('active-mode');
+    saveBtn.style.display = 'none';
+  }
+
   function showLanding() {
+    if (hasUnsaved && !confirm('You have unsaved changes. Leave anyway?')) return;
     reader.classList.remove('active');
     landing.style.display = '';
     document.title = 'mdview';
+    hasUnsaved = false;
+    fileHandle = null;
   }
 
+  // --- Event listeners ---
   openBtn.addEventListener('click', () => fileInput.click());
   openMore.addEventListener('click', () => fileInput.click());
   backBtn.addEventListener('click', showLanding);
 
+  newBtn.addEventListener('click', () => {
+    currentRaw = '# New Document\n\n';
+    currentName = 'untitled.md';
+    fileHandle = null;
+    hasUnsaved = false;
+    enterEdit();
+    landing.style.display = 'none';
+    reader.classList.add('active');
+    filenameEl.textContent = currentName;
+    document.title = currentName + ' — mdview';
+  });
+
+  toggleEdit.addEventListener('click', () => {
+    if (mode === 'edit') {
+      // going back to preview — capture edits
+      currentRaw = editorTA.value;
+      enterView();
+    } else {
+      enterEdit();
+    }
+  });
+
   toggleRaw.addEventListener('click', () => {
-    showingRaw = !showingRaw;
-    mdContent.style.display = showingRaw ? 'none' : '';
-    rawSource.style.display = showingRaw ? 'block' : 'none';
-    toggleRaw.textContent = showingRaw ? 'Rendered' : 'Source';
+    if (mode === 'source') {
+      enterView();
+    } else if (mode === 'view') {
+      enterSource();
+    } else {
+      // from edit, go to source (save edits first)
+      currentRaw = editorTA.value;
+      enterSource();
+    }
   });
 
   fileInput.addEventListener('change', (e) => {
     handleFile(e.target.files[0]);
     fileInput.value = '';
   });
+
+  // --- Editor: track changes ---
+  editorTA.addEventListener('input', () => {
+    hasUnsaved = true;
+    unsavedDot.classList.add('visible');
+    updateCounts();
+  });
+
+  // --- Word/char count ---
+  function updateCounts() {
+    const text = editorTA.value;
+    const chars = text.length;
+    const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+    wordCountEl.textContent = words + ' word' + (words !== 1 ? 's' : '');
+    charCountEl.textContent = chars + ' char' + (chars !== 1 ? 's' : '');
+  }
+
+  // --- Tab key in editor ---
+  editorTA.addEventListener('keydown', (e) => {
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      insertAtCursor('  ');
+    }
+  });
+
+  // --- Save ---
+  saveBtn.addEventListener('click', saveFile);
+
+  async function saveFile() {
+    currentRaw = editorTA.value;
+    // Try native file picker (Chrome)
+    if ('showSaveFilePicker' in window) {
+      try {
+        if (!fileHandle) {
+          fileHandle = await window.showSaveFilePicker({
+            suggestedName: currentName,
+            types: [{ description: 'Markdown', accept: { 'text/markdown': ['.md'] } }]
+          });
+        }
+        const writable = await fileHandle.createWritable();
+        await writable.write(currentRaw);
+        await writable.close();
+        currentName = fileHandle.name;
+        filenameEl.textContent = currentName;
+        document.title = currentName + ' — mdview';
+        hasUnsaved = false;
+        unsavedDot.classList.remove('visible');
+        return;
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+        // fall through to download
+      }
+    }
+    // Fallback: download
+    const blob = new Blob([currentRaw], { type: 'text/markdown' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = currentName;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    hasUnsaved = false;
+    unsavedDot.classList.remove('visible');
+  }
+
+  // --- Keyboard shortcuts ---
+  document.addEventListener('keydown', (e) => {
+    if (mode !== 'edit') return;
+    const mod = e.ctrlKey || e.metaKey;
+    if (mod && e.key === 'b') { e.preventDefault(); applyFormat('bold'); }
+    else if (mod && e.key === 'i') { e.preventDefault(); applyFormat('italic'); }
+    else if (mod && e.key === 's') { e.preventDefault(); saveFile(); }
+  });
+
+  // --- Formatting toolbar ---
+  fmtBar.addEventListener('click', (e) => {
+    const btn = e.target.closest('.fmt-btn');
+    if (!btn) return;
+    applyFormat(btn.dataset.fmt);
+    editorTA.focus();
+  });
+
+  function applyFormat(fmt) {
+    const ta = editorTA;
+    const start = ta.selectionStart;
+    const end = ta.selectionEnd;
+    const sel = ta.value.substring(start, end);
+    const before = ta.value.substring(0, start);
+    const after = ta.value.substring(end);
+
+    let insert = '';
+    let cursorOffset = 0;
+
+    switch (fmt) {
+      case 'bold':
+        insert = '**' + (sel || 'bold text') + '**';
+        cursorOffset = sel ? insert.length : 2;
+        break;
+      case 'italic':
+        insert = '*' + (sel || 'italic text') + '*';
+        cursorOffset = sel ? insert.length : 1;
+        break;
+      case 'code':
+        insert = '`' + (sel || 'code') + '`';
+        cursorOffset = sel ? insert.length : 1;
+        break;
+      case 'h1':
+        insert = linePrefix(before, '# ', sel); break;
+      case 'h2':
+        insert = linePrefix(before, '## ', sel); break;
+      case 'h3':
+        insert = linePrefix(before, '### ', sel); break;
+      case 'link':
+        insert = '[' + (sel || 'text') + '](url)';
+        cursorOffset = sel ? insert.length - 4 : 1;
+        break;
+      case 'ul':
+        insert = linePrefix(before, '- ', sel); break;
+      case 'ol':
+        insert = linePrefix(before, '1. ', sel); break;
+      case 'task':
+        insert = linePrefix(before, '- [ ] ', sel); break;
+      case 'quote':
+        insert = linePrefix(before, '> ', sel); break;
+      case 'codeblock':
+        insert = '\n```\n' + (sel || '') + '\n```\n';
+        cursorOffset = sel ? insert.length : 5;
+        break;
+      case 'hr':
+        insert = '\n---\n';
+        cursorOffset = insert.length;
+        break;
+      case 'table':
+        insert = '\n| Header | Header |\n|--------|--------|\n| Cell   | Cell   |\n';
+        cursorOffset = insert.length;
+        break;
+      default:
+        return;
+    }
+
+    ta.value = before + insert + after;
+    const newPos = start + (cursorOffset || insert.length);
+    ta.selectionStart = ta.selectionEnd = newPos;
+    ta.dispatchEvent(new Event('input'));
+  }
+
+  function linePrefix(before, prefix, sel) {
+    // If we're mid-line, add a newline first
+    const needsNL = before.length > 0 && before[before.length - 1] !== '\n';
+    return (needsNL ? '\n' : '') + prefix + (sel || '');
+  }
+
+  function insertAtCursor(text) {
+    const ta = editorTA;
+    const start = ta.selectionStart;
+    ta.value = ta.value.substring(0, start) + text + ta.value.substring(ta.selectionEnd);
+    ta.selectionStart = ta.selectionEnd = start + text.length;
+    ta.dispatchEvent(new Event('input'));
+  }
 
   // --- Scroll to top ---
   window.addEventListener('scroll', () => {
@@ -498,6 +878,14 @@
     if (file) handleFile(file);
   });
 
+  // --- Warn before leaving with unsaved changes ---
+  window.addEventListener('beforeunload', (e) => {
+    if (hasUnsaved) {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+
   // --- Markdown Parser ---
   function parseMd(src) {
     const lines = src.split('\n');
@@ -508,10 +896,8 @@
     while (i < len) {
       const line = lines[i];
 
-      // Blank line
       if (line.trim() === '') { i++; continue; }
 
-      // Code block (fenced)
       if (/^```/.test(line)) {
         const lang = line.slice(3).trim();
         const codeLines = [];
@@ -520,12 +906,11 @@
           codeLines.push(escHtml(lines[i]));
           i++;
         }
-        i++; // skip closing ```
+        i++;
         html += '<pre><code' + (lang ? ' class="lang-' + escHtml(lang) + '"' : '') + '>' + codeLines.join('\n') + '</code></pre>\n';
         continue;
       }
 
-      // Heading
       const hMatch = line.match(/^(#{1,6})\s+(.*)$/);
       if (hMatch) {
         const level = hMatch[1].length;
@@ -533,21 +918,17 @@
         i++; continue;
       }
 
-      // Horizontal rule
       if (/^(\*{3,}|-{3,}|_{3,})\s*$/.test(line.trim())) {
         html += '<hr>\n';
         i++; continue;
       }
 
-      // Table
       if (line.includes('|') && i + 1 < len && /^\|?\s*[-:]+[-| :]*$/.test(lines[i + 1])) {
         html += parseTable(lines, i);
-        // skip past table rows
         while (i < len && lines[i].includes('|') && lines[i].trim() !== '') i++;
         continue;
       }
 
-      // Blockquote
       if (/^>\s?/.test(line)) {
         const bqLines = [];
         while (i < len && /^>\s?/.test(lines[i])) {
@@ -558,21 +939,18 @@
         continue;
       }
 
-      // Unordered list
       if (/^[\s]*[-*+]\s/.test(line)) {
         html += parseList(lines, i, 'ul');
         while (i < len && (/^[\s]*[-*+]\s/.test(lines[i]) || (/^\s+/.test(lines[i]) && lines[i].trim() !== ''))) i++;
         continue;
       }
 
-      // Ordered list
       if (/^[\s]*\d+\.\s/.test(line)) {
         html += parseList(lines, i, 'ol');
         while (i < len && (/^[\s]*\d+\.\s/.test(lines[i]) || (/^\s+/.test(lines[i]) && lines[i].trim() !== ''))) i++;
         continue;
       }
 
-      // Paragraph
       const pLines = [];
       while (i < len && lines[i].trim() !== '' &&
              !/^#{1,6}\s/.test(lines[i]) &&
@@ -593,13 +971,11 @@
     return html;
   }
 
-  // --- Table parser ---
   function parseTable(lines, start) {
     let i = start;
     const headerRow = parseTableRow(lines[i]); i++;
     const alignRow  = lines[i]; i++;
 
-    // Parse alignment
     const aligns = alignRow.split('|').filter(c => c.trim() !== '').map(c => {
       c = c.trim();
       if (c.startsWith(':') && c.endsWith(':')) return 'center';
