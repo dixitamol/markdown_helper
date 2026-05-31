@@ -38,7 +38,17 @@ Check out [Anthropic](https://anthropic.com) for more.
 
 - [x] Build markdown parser
 - [x] Add dark mode
+- [x] Add tables
 - [ ] Add editor (V2)
+
+## Table
+
+| Feature | Status | Priority |
+|---------|:------:|-------:|
+| Viewer | Done | High |
+| Tables | Done | Medium |
+| Editor | Planned | Low |
+| Dark mode | Done | High |
 
 ## Nested Content
 

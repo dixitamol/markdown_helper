@@ -5,8 +5,10 @@ A zero-dependency, single-file Progressive Web App for reading Markdown files on
 ## Features
 
 - **Open `.md` files** from your phone's file system
-- **Rendered markdown** — headings, bold, italic, code (inline + blocks), links, lists, blockquotes, horizontal rules, images
+- **Rendered markdown** — headings, bold, italic, code (inline + blocks), links, lists, blockquotes, horizontal rules, images, **tables** (with alignment)
 - **System theme** — follows your phone's light/dark mode automatically
+- **Drag & drop** — drop a file onto the page (desktop)
+- **Scroll to top** — floating button appears on long documents
 - **Installable** — add to home screen for native app feel
 - **Fully offline** — no network requests, ever
 - **Single file** — the entire app is one `index.html`
@@ -27,7 +29,6 @@ A zero-dependency, single-file Progressive Web App for reading Markdown files on
 ## Limitations
 
 - Parser covers ~90% of common Markdown (not full GFM spec)
-- No tables support in V1
 - File access is read-only in V1 (editing comes in V2)
 - `showSaveFilePicker` (V2) is Chrome-only on Android
 
