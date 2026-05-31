@@ -8,43 +8,6 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <title>mdview</title>
-<script>
-(function(){
-  var s = 192, c = document.createElement('canvas');
-  c.width = s; c.height = s;
-  var x = c.getContext('2d');
-  // Background — rounded rect
-  x.fillStyle = '#1a1a2e';
-  x.beginPath();
-  x.roundRect(0, 0, s, s, 32);
-  x.fill();
-  // Accent bar left
-  x.fillStyle = '#2a5a8a';
-  x.beginPath();
-  x.roundRect(12, 12, 6, s - 24, 3);
-  x.fill();
-  // "md" text
-  x.fillStyle = '#e0e0e0';
-  x.font = 'bold 88px -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif';
-  x.textAlign = 'center';
-  x.textBaseline = 'middle';
-  x.fillText('md', s / 2 + 6, s / 2 - 2);
-  // Accent dot
-  x.fillStyle = '#6aafe6';
-  x.beginPath();
-  x.arc(152, 56, 8, 0, Math.PI * 2);
-  x.fill();
-  // Inject as icons
-  var url = c.toDataURL('image/png');
-  ['icon','apple-touch-icon','shortcut icon'].forEach(function(rel){
-    var l = document.createElement('link');
-    l.rel = rel;
-    l.type = 'image/png';
-    l.href = url;
-    document.head.appendChild(l);
-  });
-})();
-</script>
 <style>
   :root {
     --bg: #ffffff;
